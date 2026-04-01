@@ -5,7 +5,6 @@ compatibility_date = "2024-01-01"
 [[d1_databases]]
 binding = "DB"
 database_name = "pacarerate"
-database_id = "" # Set after `wrangler d1 create pacarerate`
+database_id = "065917b4-212c-4726-bb38-ac1782ae5276"
 
-[vars]
-TURNSTILE_SECRET_KEY = "" # Set via `wrangler secret put TURNSTILE_SECRET_KEY`
+# TURNSTILE_SECRET_KEY is set via `wrangler secret put` (not in this file)
