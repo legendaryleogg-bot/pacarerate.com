@@ -1,0 +1,11 @@
+{
+  "name": "pacarerate-api",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "db:init": "wrangler d1 execute pacarerate --file=../schema/init.sql",
+    "db:init:local": "wrangler d1 execute pacarerate --local --file=../schema/init.sql"
+  }
+}

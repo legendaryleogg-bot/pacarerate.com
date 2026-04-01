@@ -1,0 +1,11 @@
+name = "pacarerate-api"
+main = "src/index.js"
+compatibility_date = "2024-01-01"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "pacarerate"
+database_id = "" # Set after `wrangler d1 create pacarerate`
+
+[vars]
+TURNSTILE_SECRET_KEY = "" # Set via `wrangler secret put TURNSTILE_SECRET_KEY`
