@@ -7,12 +7,26 @@
     <link rel="icon" type="image/svg+xml" href="/favicon.svg">
     <title>PA Caregiver Rate Map — PA CareRate</title>
     <meta name="description" content="See what home health caregivers earn across Pennsylvania counties. Anonymous, community-driven rate data.">
+    <link rel="canonical" href="https://pacarerate.com/rates/">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://pacarerate.com/rates/">
+    <meta property="og:title" content="PA Caregiver Pay Rate Map by County">
+    <meta property="og:description" content="See what home health caregivers earn across Pennsylvania counties. Anonymous, community-driven rate data.">
+    <meta property="og:image" content="https://pacarerate.com/favicon.png">
+    <meta property="og:site_name" content="PA CareRate">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="PA Caregiver Pay Rate Map by County">
+    <meta name="twitter:description" content="See what home health caregivers earn across Pennsylvania counties. Anonymous, community-driven rate data.">
+    <meta name="twitter:image" content="https://pacarerate.com/favicon.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <link rel="stylesheet" href="/css/shared.css">
     <link rel="stylesheet" href="/css/map.css">
+    <script type="application/ld+json">
+{"@context":"https://schema.org","@type":"Dataset","name":"PA Caregiver Pay Rates by County","description":"Anonymous, community-submitted hourly pay rates for home health caregivers across Pennsylvania counties.","url":"https://pacarerate.com/rates/","creator":{"@type":"Organization","name":"PA CareRate"},"spatialCoverage":"Pennsylvania, USA","variableMeasured":"Hourly pay rate"}
+    </script>
 </head>
 <body>
     <nav class="nav">
@@ -59,12 +73,12 @@
         </div>
     </div>
 
-    <div class="footer">
+    <footer class="footer">
         <p><a href="/privacy.html">Privacy Policy</a> &middot; <a href="/terms.html">Terms of Service</a></p>
         <p style="margin-top:0.5rem;">Your individual data is never shared. Only county-level averages are displayed.</p>
         <p style="margin-top:0.75rem;">PA CareRate is an Accel Direct service. Accel Direct LLC is not a home care registry or home care agency.<br>
         89 Ridley Ave, Sharon Hill, PA 19079 &middot; support@acceldirect.net &middot; (227) 215-1525</p>
-    </div>
+    </footer>
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="/js/counties.js"></script>
