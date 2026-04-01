@@ -80,50 +80,62 @@
     <div class="container">
         <a href="/" class="back">&larr; Back</a>
         <h1>Privacy Policy</h1>
-        <p class="effective">Effective Date: March 28, 2026</p>
+        <p class="effective">Effective Date: April 1, 2026</p>
 
         <h2>Who We Are</h2>
-        <p>PA CareRate is a service of Accel Direct LLC ("we," "us," "our"), a business services company that connects caregivers with home care agencies through automated lead generation. We are located at 89 Ridley Ave, Sharon Hill, PA 19079.</p>
-
-        <h2>Information We Collect</h2>
-        <p>When you submit an inquiry through our intake forms, we may collect:</p>
+        <p>PA CareRate is a service of Accel Direct LLC ("we," "us," "our"), a business services company located at 89 Ridley Ave, Sharon Hill, PA 19079. This website (<strong>pacarerate.com</strong>) hosts two services:</p>
         <ul>
-            <li>Name, email address, and phone number</li>
-            <li>Employment-related information you provide (county, insurance type, authorized hours)</li>
+            <li><strong>Rate Transparency Tool</strong> — an anonymous, community-driven rate map showing what caregivers earn across Pennsylvania counties.</li>
+            <li><strong>Rate Check</strong> — a personalized rate inquiry hosted on a separate subdomain (<strong>go.pacarerate.com</strong>), which has its own privacy disclosures and consent flows.</li>
         </ul>
+        <p>This privacy policy covers <strong>pacarerate.com only</strong> — the landing page, the Rate Map, and the rate submission form. The Rate Check service at go.pacarerate.com is operated through a third-party platform (GoHighLevel) and is governed by the privacy disclosures presented on that platform.</p>
+
+        <h2>What This Site Collects</h2>
+        <p><strong>This site does not collect your name, email address, phone number, or any personally identifying information.</strong></p>
+        <p>When you submit a rate through our Rate Map form, we collect:</p>
+        <ul>
+            <li><strong>Required:</strong> Hourly rate and county</li>
+            <li><strong>Optional:</strong> Employer name, job type, hours per week, benefits, and satisfaction rating</li>
+            <li><strong>Automatically:</strong> A one-way cryptographic hash of your IP address (SHA-256) for spam prevention. We never store your actual IP address.</li>
+        </ul>
+        <p>No account creation is required. Submissions are anonymous.</p>
 
         <h2>How We Use Your Information</h2>
-        <p>We use the information you provide to:</p>
+        <p>We use the information submitted through the Rate Map form to:</p>
         <ul>
-            <li>Present personalized rate information based on your county and hours</li>
-            <li>Contact you by SMS and email regarding opportunities that match your profile</li>
-            <li>Share your information with a licensed home care agency partner for employment consideration</li>
+            <li>Calculate and display county-level aggregated rate data (medians and ranges)</li>
+            <li>Prevent spam and duplicate submissions (via IP hash and Cloudflare Turnstile)</li>
+            <li>Improve the accuracy and coverage of the Rate Map over time</li>
         </ul>
+        <p>We do not use your submission to contact you, market to you, or share your information with any third party. There is no SMS, email, or phone communication from this site.</p>
 
-        <h2>SMS Communications</h2>
-        <p>By submitting your phone number through our intake form, you may opt in to receive text messages from PA CareRate / Accel Direct LLC related to caregiver opportunities. Two separate consent options are provided: one for non-marketing transactional messages (rate confirmations, specialist follow-ups, scheduling updates) and one for marketing and promotional messages (special offers, new opportunities, updates). Neither consent is required to use our services.</p>
-        <p>Message and data rates may apply. Message frequency varies. You may opt out at any time by replying <strong>STOP</strong> to any message. Reply <strong>HELP</strong> for assistance. Upon opting out, you will receive a single confirmation message and no further texts will be sent.</p>
-
-        <h2>SMS Consent Sharing</h2>
-        <p><strong>We do not share, sell, rent, or trade your SMS consent or phone number with any third parties for their marketing purposes.</strong> Your SMS opt-in consent is collected solely by PA CareRate (Accel Direct LLC) and is used exclusively to send you messages from PA CareRate. SMS consent information is not shared with partner agencies or any other third parties, except as required to deliver messages through our SMS service provider (LeadConnector/Twilio).</p>
+        <h2>What We Display</h2>
+        <ul>
+            <li>Only county-level aggregated data (medians and typical ranges). Individual submissions are never displayed.</li>
+            <li>County data is not shown until at least 5 independent reports are received for that county.</li>
+            <li>Employer names submitted by caregivers are stored for internal data quality purposes only. They are not displayed publicly in the current version of the platform.</li>
+        </ul>
 
         <h2>Information Sharing</h2>
-        <p>We may share your non-SMS information (name, email, employment details) with a licensed home care agency partner, solely for the purpose of evaluating you for potential employment as a caregiver. We do not sell, rent, or trade your personal information to unaffiliated third parties for their own marketing purposes.</p>
+        <p>We do not sell, rent, trade, or share your submitted information with any third party. Rate submissions are used solely to produce aggregated, anonymous county-level statistics.</p>
+
+        <h2>Bot Protection</h2>
+        <p>We use Cloudflare Turnstile to prevent automated submissions. This may collect limited interaction data as described in <a href="https://www.cloudflare.com/privacypolicy/">Cloudflare's Privacy Policy</a>.</p>
 
         <h2>Cookies and Tracking Technologies</h2>
-        <p>Our website and intake forms may use cookies, pixels, and similar tracking technologies to:</p>
+        <p>This site may use cookies and similar technologies to:</p>
         <ul>
-            <li>Ensure proper functioning of our website and forms</li>
+            <li>Ensure proper functioning of the website</li>
             <li>Analyze website traffic and usage patterns</li>
-            <li>Measure the effectiveness of our advertising campaigns</li>
+            <li>Measure the effectiveness of advertising campaigns that link to this site</li>
         </ul>
-        <p>You can control cookies through your browser settings. Disabling cookies may affect the functionality of our intake forms. We do not use cookies to collect sensitive personal information beyond what you voluntarily submit through our forms.</p>
+        <p>You can control cookies through your browser settings. This site does not collect sensitive personal information through cookies.</p>
 
         <h2>Data Retention</h2>
-        <p>We retain your information for as long as necessary to fulfill the purposes described above, or as required by applicable law. You may request deletion of your data at any time by contacting us.</p>
+        <p>Anonymous rate submissions are retained indefinitely to maintain the accuracy of county-level aggregates. IP hashes used for spam prevention are retained for the duration of the rate-limiting window (24 hours) and may persist in the submissions table as a spam-prevention record.</p>
 
         <h2>Security</h2>
-        <p>We use commercially reasonable measures to protect your information. However, no method of electronic transmission or storage is completely secure.</p>
+        <p>We use commercially reasonable measures to protect submitted data, including encrypted transmission (HTTPS) and edge-deployed infrastructure (Cloudflare). However, no method of electronic transmission or storage is completely secure.</p>
 
         <h2>Changes to This Policy</h2>
         <p>We may update this policy from time to time. Changes will be posted on this page with an updated effective date.</p>
@@ -136,16 +148,6 @@
             Sharon Hill, PA 19079<br>
             <a href="mailto:Support@AccelDirect.net">Support@AccelDirect.net</a>
         </p>
-
-        <h2>Rate Transparency Tool</h2>
-        <p>Our Rate Map collects anonymous caregiver-reported pay data to show county-level averages across Pennsylvania.</p>
-        <ul>
-            <li><strong>What we collect:</strong> Hourly rate, county, and optional fields (employer name, job type, hours, benefits, satisfaction). We also store a one-way hash of your IP address for spam prevention — we never store your actual IP address.</li>
-            <li><strong>What we display:</strong> Only county-level aggregated data (medians and ranges). Individual submissions are never displayed.</li>
-            <li><strong>Minimum threshold:</strong> County data is not shown until at least 5 independent reports are received for that county.</li>
-            <li><strong>Employer names:</strong> Employer names submitted by caregivers are stored for internal data quality purposes only. They are not displayed publicly in the current version of the platform.</li>
-            <li><strong>Bot protection:</strong> We use Cloudflare Turnstile to prevent automated submissions. This may collect limited interaction data as described in <a href="https://www.cloudflare.com/privacypolicy/">Cloudflare's Privacy Policy</a>.</li>
-        </ul>
 
         <div class="footer">
             &copy; 2026 Accel Direct LLC. All rights reserved.
