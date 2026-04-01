@@ -21,93 +21,133 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="/css/shared.css">
+    <link rel="stylesheet" href="/css/map.css">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: #1a365d;
-            color: #ffffff;
-            min-height: 100vh;
+        /* Zone 1: Statement Hero */
+        .hero {
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 5rem 1.5rem 2rem;
             text-align: center;
+            min-height: 85vh;
+            padding: 4rem 2rem 2rem;
+            position: relative;
         }
-        .container {
-            max-width: 540px;
-            width: 100%;
-        }
-        .label {
+
+        .hero .eyebrow {
             display: inline-block;
             font-size: 0.75rem;
             font-weight: 700;
-            letter-spacing: 0.12em;
+            letter-spacing: 0.14em;
             text-transform: uppercase;
             color: #f97316;
             margin-bottom: 1.5rem;
         }
-        h1 {
-            font-size: 1.8rem;
+
+        .hero h1 {
+            font-size: 2.8rem;
             font-weight: 800;
-            line-height: 1.25;
+            line-height: 1.15;
             color: #ffffff;
+            max-width: 640px;
             margin-bottom: 1.25rem;
-            letter-spacing: -0.02em;
+            letter-spacing: -0.03em;
         }
-        .subtext {
-            font-size: 1rem;
+
+        .hero .lede {
+            font-size: 1.1rem;
             font-weight: 400;
-            line-height: 1.6;
-            color: rgba(255, 255, 255, 0.75);
-            margin-bottom: 2.5rem;
+            line-height: 1.7;
+            color: rgba(255, 255, 255, 0.6);
+            max-width: 520px;
+            margin-bottom: 3rem;
         }
-        .cta {
-            display: inline-block;
-            background: #f97316;
-            color: #ffffff;
-            font-family: 'Inter', sans-serif;
-            font-size: 1rem;
-            font-weight: 700;
-            padding: 1rem 2.5rem;
-            border-radius: 8px;
-            text-decoration: none;
-            transition: background 0.2s, transform 0.1s;
-            border: none;
-            cursor: pointer;
-        }
-        .cta:hover {
-            background: #ea580c;
-            transform: translateY(-1px);
-        }
-        .cta:active {
-            transform: translateY(0);
-        }
-        .footer {
-            margin-top: 3rem;
+
+        .scroll-hint {
+            position: absolute;
+            bottom: 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            color: rgba(255, 255, 255, 0.3);
             font-size: 0.7rem;
-            color: rgba(255, 255, 255, 0.35);
-            line-height: 1.6;
+            font-weight: 500;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            animation: pulse-down 2s ease-in-out infinite;
         }
-        .footer a {
+
+        .scroll-hint svg {
+            width: 20px;
+            height: 20px;
+            stroke: rgba(255, 255, 255, 0.3);
+            fill: none;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        @keyframes pulse-down {
+            0%, 100% { transform: translateY(0); opacity: 0.4; }
+            50% { transform: translateY(6px); opacity: 0.8; }
+        }
+
+        /* Zone 2: Map section */
+        .map-section {
+            padding-top: 1rem;
+        }
+
+        .map-section .map-container {
+            max-width: 1100px;
+        }
+
+        .map-section #map {
+            height: 540px;
+        }
+
+        .map-instruction {
+            text-align: center;
+            font-size: 0.85rem;
             color: rgba(255, 255, 255, 0.45);
-            text-decoration: none;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+            margin-bottom: 1.25rem;
         }
-        .footer a:hover {
-            color: rgba(255, 255, 255, 0.7);
-            border-color: rgba(255, 255, 255, 0.4);
+
+        .rate-note {
+            text-align: center;
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.35);
+            margin-top: 0.5rem;
         }
-        .brand-line {
-            margin-top: 0.75rem;
-            font-size: 0.65rem;
-            color: rgba(255, 255, 255, 0.25);
-            letter-spacing: 0.06em;
+
+        /* Zone 3: CTA */
+        .action-section {
+            text-align: center;
+            padding: 3rem 2rem;
         }
-        @media (min-width: 480px) {
-            h1 { font-size: 2.2rem; }
-            .subtext { font-size: 1.05rem; }
+
+        .action-section p {
+            font-size: 0.95rem;
+            color: rgba(255, 255, 255, 0.55);
+            margin-bottom: 1.25rem;
+            max-width: 440px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Responsive */
+        @media (max-width: 640px) {
+            .hero { min-height: 75vh; padding: 3rem 1.5rem 2rem; }
+            .hero h1 { font-size: 2rem; }
+            .hero .lede { font-size: 0.95rem; }
+            .map-section #map { height: 380px; }
+        }
+
+        @media (min-width: 768px) {
+            .hero h1 { font-size: 3.2rem; }
         }
     </style>
     <script type="application/ld+json">
@@ -115,26 +155,76 @@
     </script>
 </head>
 <body>
-    <nav style="position:fixed;top:0;left:0;right:0;display:flex;align-items:center;justify-content:space-between;padding:0.75rem 1.5rem;background:rgba(0,0,0,0.2);z-index:100;">
-        <a href="/" style="color:#fff;font-weight:700;font-size:0.9rem;text-decoration:none;">PA CareRate</a>
-        <div style="display:flex;gap:1.25rem;">
-            <a href="/rates/" style="color:rgba(255,255,255,0.7);font-size:0.8rem;text-decoration:none;">Rate Map</a>
-            <a href="/submit/" style="color:rgba(255,255,255,0.7);font-size:0.8rem;text-decoration:none;">Share Your Rate</a>
-        </div>
+    <nav class="nav">
+        <a href="/" class="nav-brand">PA CareRate</a>
+        <ul class="nav-links">
+            <li><a href="#map" class="active">Rate Map</a></li>
+            <li><a href="/submit/">Share Your Rate</a></li>
+            <li><a href="/privacy.html">Privacy</a></li>
+        </ul>
     </nav>
-    <div class="container">
-        <span class="label">PA Caregivers</span>
-        <h1>Tired of late checks? Done being underpaid for the care you already give?</h1>
-        <p class="subtext">You're already doing the hardest job there is. In 60 seconds, find out what that work is actually worth.</p>
-        <a href="https://go.pacarerate.com/empathy-hook-1770" class="cta">Check My Rate &rarr;</a>
-        <p style="margin-top:1.25rem;font-size:0.85rem;color:rgba(255,255,255,0.5);">
-            or <a href="/rates/" style="color:#f97316;border-bottom:1px solid rgba(249,115,22,0.3);">see what caregivers earn across PA</a>
-        </p>
-        <div class="footer">
-            <p>By using this site, you agree to our <a href="/privacy.html">Privacy Policy</a> and <a href="/terms.html">Terms of Service</a>.</p>
-            <p class="brand-line">PA CareRate is an Accel Direct service. Accel Direct LLC is not a home care registry or home care agency.</p>
-            <p class="brand-line">89 Ridley Ave, Sharon Hill, PA 19079 &middot; support@acceldirect.net &middot; (227) 215-1525</p>
+
+    <!-- Zone 1: Statement Hero -->
+    <section class="hero">
+        <span class="eyebrow">PA Caregivers</span>
+        <h1>See what caregivers earn across PA.</h1>
+        <p class="lede">Anonymous, community-reported pay data for home health caregivers across all 67 Pennsylvania counties.</p>
+
+        <div class="scroll-hint">
+            <span>Explore the map</span>
+            <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
         </div>
-    </div>
+    </section>
+
+    <!-- Zone 2: Map -->
+    <section class="map-section" id="map-section">
+        <div class="map-container">
+            <p class="map-instruction">Click any county to see what caregivers are earning.</p>
+
+            <div id="map"></div>
+            <p class="rate-note">Rates shown are typical for caregivers working a standard 40-hour week.</p>
+
+            <div id="detail-panel" class="detail-panel">
+                <h2 id="panel-county-name"></h2>
+                <div id="panel-stats">
+                    <div class="stat">
+                        <span class="stat-label">Median Hourly Rate</span>
+                        <span class="stat-value" id="panel-median"></span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-label">Typical Range</span>
+                        <span class="stat-value" id="panel-range"></span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-label">Reports</span>
+                        <span class="stat-value" id="panel-count"></span>
+                    </div>
+                </div>
+                <div id="panel-insufficient" class="insufficient" style="display:none;">
+                    This county needs more reports before we can show rate data. <a href="/submit/">Help by sharing yours.</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Zone 3: CTA -->
+    <section class="action-section">
+        <p>Add your data to help build a clearer picture for everyone.</p>
+        <a href="/submit/" class="btn-primary">Contribute Your Rate</a>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p><a href="/privacy.html">Privacy Policy</a> &middot; <a href="/terms.html">Terms of Service</a></p>
+        <p style="margin-top:0.5rem;">Your individual data is never shared. Only county-level averages are displayed.</p>
+        <p style="margin-top:0.75rem;">PA CareRate is an Accel Direct service. Accel Direct LLC is not a home care registry or home care agency.<br>
+        89 Ridley Ave, Sharon Hill, PA 19079 &middot; support@acceldirect.net &middot; (227) 215-1525</p>
+    </footer>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="/js/counties.js"></script>
+    <script src="/js/rates.js"></script>
+    <script src="/js/detail-panel.js"></script>
+    <script src="/js/map.js"></script>
 </body>
 </html>
