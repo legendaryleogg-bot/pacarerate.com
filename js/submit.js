@@ -1,7 +1,7 @@
 // js/submit.js
 // Handles form validation, Turnstile token retrieval, and submission to Worker API.
 
-const API_BASE = 'https://pacarerate-api.jarrod-7fa.workers.dev'; // Update after deploy
+const API_BASE = 'https://api.pacarerate.com'; // Update after deploy
 
 (function () {
   // Populate county dropdown from canonical list

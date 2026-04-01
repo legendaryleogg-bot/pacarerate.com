@@ -1,7 +1,7 @@
 // js/rates.js
 // Fetches aggregated rate data from the Worker API.
 
-var API_BASE = 'https://pacarerate-api.jarrod-7fa.workers.dev'; // Update after deploy
+var API_BASE = 'https://api.pacarerate.com'; // Update after deploy
 
 async function fetchAllRates() {
   var response = await fetch(API_BASE + '/api/rates');
