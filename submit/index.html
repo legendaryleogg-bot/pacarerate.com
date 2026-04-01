@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <title>Share Your Rate — PA CareRate</title>
+    <meta name="description" content="Help other PA caregivers by anonymously sharing your hourly rate.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/shared.css">
+    <link rel="stylesheet" href="/css/form.css">
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+</head>
+<body>
+    <nav class="nav">
+        <a href="/" class="nav-brand">PA CareRate</a>
+        <ul class="nav-links">
+            <li><a href="/rates/">Rate Map</a></li>
+            <li><a href="/submit/" class="active">Share Your Rate</a></li>
+            <li><a href="/privacy.html">Privacy</a></li>
+        </ul>
+    </nav>
+
+    <div class="form-container" id="form-wrapper">
+        <h1>Share Your Rate</h1>
+        <p class="subtitle">Your individual data is never shared. Only county-level averages are displayed.</p>
+
+        <div id="form-error" class="form-error"></div>
+
+        <form id="rate-form" novalidate>
+            <div class="form-group">
+                <label>Hourly Rate <span class="required">*</span></label>
+                <input type="number" id="rate" name="rate" min="5" max="75" step="0.25" placeholder="e.g., 15.50" required>
+                <p class="hint">Your current hourly pay rate ($5–$75)</p>
+            </div>
+
+            <div class="form-group">
+                <label>County <span class="required">*</span></label>
+                <select id="county" name="county" required>
+                    <option value="">Select your county</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Employer Name <span style="color:rgba(255,255,255,0.4);font-weight:400;">(optional)</span></label>
+                <input type="text" id="employer_name" name="employer_name" placeholder="e.g., Bayada Home Health Care">
+            </div>
+
+            <div class="form-group">
+                <label>Job Type <span style="color:rgba(255,255,255,0.4);font-weight:400;">(optional)</span></label>
+                <select id="job_type" name="job_type">
+                    <option value="">Select job type</option>
+                    <option value="personal care aide">Personal Care Aide</option>
+                    <option value="home health aide">Home Health Aide</option>
+                    <option value="cna">CNA</option>
+                    <option value="companion">Companion</option>
+                    <option value="other">Other</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Hours Per Week <span style="color:rgba(255,255,255,0.4);font-weight:400;">(optional)</span></label>
+                <input type="number" id="hours_per_week" name="hours_per_week" min="1" max="168" placeholder="e.g., 35">
+            </div>
+
+            <div class="form-group">
+                <label>Benefits <span style="color:rgba(255,255,255,0.4);font-weight:400;">(optional, check all that apply)</span></label>
+                <div class="benefits-grid">
+                    <label><input type="checkbox" name="benefits" value="health_insurance"> Health Insurance</label>
+                    <label><input type="checkbox" name="benefits" value="pto"> PTO / Paid Time Off</label>
+                    <label><input type="checkbox" name="benefits" value="dental"> Dental</label>
+                    <label><input type="checkbox" name="benefits" value="vision"> Vision</label>
+                    <label><input type="checkbox" name="benefits" value="retirement"> Retirement / 401k</label>
+                    <label><input type="checkbox" name="benefits" value="training"> Paid Training</label>
+                    <label><input type="checkbox" name="benefits" value="mileage"> Mileage Reimbursement</label>
+                    <label><input type="checkbox" name="benefits" value="none"> No Benefits</label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Satisfaction <span style="color:rgba(255,255,255,0.4);font-weight:400;">(optional)</span></label>
+                <div class="satisfaction-group">
+                    <label><input type="radio" name="satisfaction" value="1"><span>1</span></label>
+                    <label><input type="radio" name="satisfaction" value="2"><span>2</span></label>
+                    <label><input type="radio" name="satisfaction" value="3"><span>3</span></label>
+                    <label><input type="radio" name="satisfaction" value="4"><span>4</span></label>
+                    <label><input type="radio" name="satisfaction" value="5"><span>5</span></label>
+                </div>
+                <p class="hint">1 = very unsatisfied, 5 = very satisfied</p>
+            </div>
+
+            <div class="cf-turnstile" data-sitekey="YOUR_SITE_KEY" data-theme="dark"></div>
+
+            <div style="margin-top: 1.5rem;">
+                <button type="submit" class="btn-primary" style="width:100%;">Submit My Rate</button>
+            </div>
+        </form>
+    </div>
+
+    <div class="form-container">
+        <div id="form-success" class="form-success">
+            <h2>Thank you!</h2>
+            <p>Your rate has been submitted anonymously. It helps caregivers across PA see what their work is worth.</p>
+            <p style="margin-top:1.5rem;"><a href="/rates/" class="btn-primary">See the Rate Map &rarr;</a></p>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p><a href="/privacy.html">Privacy Policy</a> &middot; <a href="/terms.html">Terms of Service</a></p>
+        <p style="margin-top:0.5rem;">PA CareRate is an Accel Direct service</p>
+    </div>
+
+    <script src="/js/counties.js"></script>
+    <script src="/js/submit.js"></script>
+</body>
+</html>

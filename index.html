@@ -21,7 +21,7 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 2rem 1.5rem;
+            padding: 5rem 1.5rem 2rem;
             text-align: center;
         }
         .container {
@@ -101,11 +101,21 @@
     </style>
 </head>
 <body>
+    <nav style="position:fixed;top:0;left:0;right:0;display:flex;align-items:center;justify-content:space-between;padding:0.75rem 1.5rem;background:rgba(0,0,0,0.2);z-index:100;">
+        <a href="/" style="color:#fff;font-weight:700;font-size:0.9rem;text-decoration:none;">PA CareRate</a>
+        <div style="display:flex;gap:1.25rem;">
+            <a href="/rates/" style="color:rgba(255,255,255,0.7);font-size:0.8rem;text-decoration:none;">Rate Map</a>
+            <a href="/submit/" style="color:rgba(255,255,255,0.7);font-size:0.8rem;text-decoration:none;">Share Your Rate</a>
+        </div>
+    </nav>
     <div class="container">
         <span class="label">PA Caregivers</span>
         <h1>Tired of late checks? Done being underpaid for the care you already give?</h1>
         <p class="subtext">You're already doing the hardest job there is. In 60 seconds, find out what that work is actually worth.</p>
         <a href="https://go.pacarerate.com/empathy-hook-1770" class="cta">Check My Rate &rarr;</a>
+        <p style="margin-top:1.25rem;font-size:0.85rem;color:rgba(255,255,255,0.5);">
+            or <a href="/rates/" style="color:#f97316;border-bottom:1px solid rgba(249,115,22,0.3);">see what caregivers earn across PA</a>
+        </p>
         <div class="footer">
             <p>By using this site, you agree to our <a href="/privacy.html">Privacy Policy</a> and <a href="/terms.html">Terms of Service</a>.</p>
             <p class="brand-line">PA CareRate is an Accel Direct service</p>
