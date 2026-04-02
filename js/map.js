@@ -2,10 +2,10 @@
 // Initializes Leaflet map, loads PA county GeoJSON, colors by rate data.
 
 (async function () {
-  // PA bounding box — tight to state borders with minimal padding
+  // PA bounding box — comfortable padding around state borders
   var paBounds = L.latLngBounds(
-    L.latLng(39.7, -80.6),  // SW corner
-    L.latLng(42.3, -74.7)   // NE corner
+    L.latLng(39.4, -81.0),  // SW corner
+    L.latLng(42.5, -74.2)   // NE corner
   );
 
   var map = L.map('map', {
@@ -14,14 +14,14 @@
     dragging: true,
     maxBounds: paBounds,
     maxBoundsViscosity: 1.0,
-    minZoom: 8,
+    minZoom: 7,
     maxZoom: 11,
-  }).setView([40.9, -77.8], 8);
+  }).setView([40.9, -77.8], 7);
 
   L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
     attribution: '&copy; OpenStreetMap contributors &copy; CARTO',
     maxZoom: 11,
-    minZoom: 8,
+    minZoom: 7,
   }).addTo(map);
 
   var rateData = await fetchAllRates();
