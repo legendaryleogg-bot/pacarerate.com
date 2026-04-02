@@ -1,9 +1,9 @@
 const MAX_SUBMISSIONS_PER_WINDOW = 3;
 const WINDOW_HOURS = 24;
 
-export async function hashIP(ip) {
+export async function hashIP(ip, salt) {
   const encoder = new TextEncoder();
-  const data = encoder.encode(ip);
+  const data = encoder.encode((salt || '') + ip);
   const hashBuffer = await crypto.subtle.digest('SHA-256', data);
   const hashArray = Array.from(new Uint8Array(hashBuffer));
   return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');

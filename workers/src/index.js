@@ -8,6 +8,9 @@ function getCorsHeaders(env) {
     'Access-Control-Allow-Origin': env.SITE_ORIGIN || 'https://pacarerate.com',
     'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
     'Access-Control-Allow-Headers': 'Content-Type',
+    'X-Content-Type-Options': 'nosniff',
+    'X-Frame-Options': 'DENY',
+    'Strict-Transport-Security': 'max-age=31536000; includeSubDomains',
   };
 }
 

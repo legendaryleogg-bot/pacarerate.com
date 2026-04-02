@@ -18,7 +18,26 @@ async function verifyTurnstile(token, secretKey, ip) {
   return outcome.success === true;
 }
 
+const MAX_BODY_SIZE = 10 * 1024; // 10KB
+
 export async function handleSubmit(request, env) {
+  // Fail-closed: reject if Turnstile secret is not configured
+  if (!env.TURNSTILE_SECRET_KEY) {
+    return new Response(JSON.stringify({ error: 'Service configuration error' }), {
+      status: 503,
+      headers: { 'Content-Type': 'application/json' },
+    });
+  }
+
+  // Body size limit
+  const contentLength = parseInt(request.headers.get('content-length') || '0', 10);
+  if (contentLength > MAX_BODY_SIZE) {
+    return new Response(JSON.stringify({ error: 'Request too large' }), {
+      status: 413,
+      headers: { 'Content-Type': 'application/json' },
+    });
+  }
+
   let body;
   try {
     body = await request.json();
@@ -54,7 +73,7 @@ export async function handleSubmit(request, env) {
     });
   }
 
-  const ipHash = await hashIP(ip);
+  const ipHash = await hashIP(ip, env.IP_HASH_SALT);
   const rateLimit = await checkRateLimit(env.DB, ipHash);
   if (!rateLimit.allowed) {
     return new Response(JSON.stringify({ error: 'Rate limit exceeded. Try again tomorrow.' }), {
