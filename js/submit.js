@@ -1,9 +1,9 @@
 // js/submit.js
 // Handles form validation, Turnstile token retrieval, and submission to Worker API.
 
-const API_BASE = 'https://api.pacarerate.com'; // Update after deploy
+(async function () {
+  var config = await loadConfig();
 
-(function () {
   // Populate county dropdown from canonical list
   var countySelect = document.getElementById('county');
   PA_COUNTIES.forEach(function (county) {
@@ -12,6 +12,16 @@ const API_BASE = 'https://api.pacarerate.com'; // Update after deploy
     option.textContent = county;
     countySelect.appendChild(option);
   });
+
+  // Inject Turnstile site key from config
+  var turnstileDiv = document.querySelector('.cf-turnstile');
+  if (turnstileDiv && config.turnstile_site_key) {
+    turnstileDiv.setAttribute('data-sitekey', config.turnstile_site_key);
+    // Re-render Turnstile if it loaded before config arrived
+    if (window.turnstile) {
+      window.turnstile.render(turnstileDiv);
+    }
+  }
 
   // Satisfaction radio toggle
   document.querySelectorAll('.satisfaction-group label').forEach(function (label) {
@@ -85,7 +95,7 @@ const API_BASE = 'https://api.pacarerate.com'; // Update after deploy
     submitBtn.textContent = 'Submitting...';
 
     try {
-      var response = await fetch(API_BASE + '/api/submit', {
+      var response = await fetch(config.api_base + '/api/submit', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),

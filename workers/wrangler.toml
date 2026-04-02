@@ -12,3 +12,7 @@ database_name = "main-pacarerate"
 database_id = "00964e85-a0ba-40d7-8b26-c0f788b649d0"
 
 # TURNSTILE_SECRET_KEY is set via `wrangler secret put` (not in this file)
+
+[vars]
+TURNSTILE_SITE_KEY = "0x4AAAAAACzAMQ1ULEiIS32g"
+SITE_ORIGIN = "https://pacarerate.com"

@@ -1,16 +1,16 @@
 // js/rates.js
 // Fetches aggregated rate data from the Worker API.
 
-var API_BASE = 'https://api.pacarerate.com'; // Update after deploy
-
 async function fetchAllRates() {
-  var response = await fetch(API_BASE + '/api/rates');
+  var config = await loadConfig();
+  var response = await fetch(config.api_base + '/api/rates');
   if (!response.ok) return {};
   return response.json();
 }
 
 async function fetchCountyRates(county) {
-  var response = await fetch(API_BASE + '/api/rates/' + encodeURIComponent(county));
+  var config = await loadConfig();
+  var response = await fetch(config.api_base + '/api/rates/' + encodeURIComponent(county));
   if (!response.ok) return null;
   return response.json();
 }
