@@ -1,231 +1,1254 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/png" href="/favicon.png">
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
-    <title>PA CareRate — See What Your Care Is Worth</title>
-    <meta name="description" content="Find out what Pennsylvania caregivers are actually paid by county. Free, anonymous rate data for PA home health aides, PCAs, and CNAs.">
-    <link rel="canonical" href="https://pacarerate.com/">
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://pacarerate.com/">
-    <meta property="og:title" content="PA CareRate — See What Your Care Is Worth">
-    <meta property="og:description" content="Find out what Pennsylvania caregivers are actually paid by county. Free, anonymous rate data for PA home health aides, PCAs, and CNAs.">
-    <meta property="og:image" content="https://pacarerate.com/og-image.png">
-    <meta property="og:site_name" content="PA CareRate">
-    <meta name="twitter:card" content="summary">
-    <meta name="twitter:title" content="PA CareRate — See What Your Care Is Worth">
-    <meta name="twitter:description" content="Find out what Pennsylvania caregivers are actually paid by county. Free, anonymous rate data for PA home health aides, PCAs, and CNAs.">
-    <meta name="twitter:image" content="https://pacarerate.com/og-image.png">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha384-sHL9NAb7lN7rfvG5lfHpm643Xkcjzp4jFvuavGOndn6pjVqS6ny56CAt3nsEVT4H" crossorigin="anonymous" />
-    <link rel="stylesheet" href="/css/shared.css">
-    <link rel="stylesheet" href="/css/map.css">
-    <style>
-        /* Zone 1: Statement Hero */
-        .hero {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            min-height: 85vh;
-            padding: 4rem 2rem 2rem;
-            position: relative;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/png" href="/favicon.png">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <title>PA CareRate — See What Your Care Is Worth</title>
+  <meta name="description" content="Find out what Pennsylvania caregivers are actually paid by county. Free, anonymous rate data for PA home health aides, PCAs, and CNAs.">
+  <link rel="canonical" href="https://pacarerate.com/">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://pacarerate.com/">
+  <meta property="og:title" content="PA CareRate — See What Your Care Is Worth">
+  <meta property="og:description" content="Find out what Pennsylvania caregivers are actually paid by county. Free, anonymous rate data for PA home health aides, PCAs, and CNAs.">
+  <meta property="og:image" content="https://pacarerate.com/og-image.png">
+  <meta property="og:site_name" content="PA CareRate">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="PA CareRate — See What Your Care Is Worth">
+  <meta name="twitter:description" content="Find out what Pennsylvania caregivers are actually paid by county. Free, anonymous rate data for PA home health aides, PCAs, and CNAs.">
+  <meta name="twitter:image" content="https://pacarerate.com/og-image.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+  <script src="https://cdn.jsdelivr.net/npm/topojson-client@3/dist/topojson-client.min.js"></script>
+  <script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebSite","name":"PA CareRate","url":"https://pacarerate.com","description":"Pennsylvania caregiver pay rate transparency tool","publisher":{"@type":"Organization","name":"Accel Direct LLC","address":{"@type":"PostalAddress","streetAddress":"502 W 7th St","addressLocality":"Erie","addressRegion":"PA","postalCode":"16502","addressCountry":"US"},"contactPoint":{"@type":"ContactPoint","email":"admin@pacarerate.com"}}}
+  </script>
 
-        .hero .eyebrow {
-            display: inline-block;
-            font-size: 0.75rem;
-            font-weight: 700;
-            letter-spacing: 0.14em;
-            text-transform: uppercase;
-            color: #f97316;
-            margin-bottom: 1.5rem;
-        }
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-        .hero h1 {
-            font-size: 2.8rem;
-            font-weight: 800;
-            line-height: 1.15;
-            color: #ffffff;
-            max-width: 640px;
-            margin-bottom: 1.25rem;
-            letter-spacing: -0.03em;
-        }
+    :root { font-size: clamp(12px, 0.75vw + 10px, 16px); }
 
-        .hero .lede {
-            font-size: 1.1rem;
-            font-weight: 400;
-            line-height: 1.7;
-            color: rgba(255, 255, 255, 0.6);
-            max-width: 520px;
-            margin-bottom: 3rem;
-        }
+    body {
+      font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #1a365d;
+      color: #fff;
+      min-height: 100vh;
+    }
 
-        .scroll-hint {
-            position: absolute;
-            bottom: 2rem;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 0.5rem;
-            color: rgba(255, 255, 255, 0.3);
-            font-size: 0.7rem;
-            font-weight: 500;
-            letter-spacing: 0.08em;
-            text-transform: uppercase;
-            animation: pulse-down 2s ease-in-out infinite;
-        }
+    a { text-decoration: none; }
 
-        .scroll-hint svg {
-            width: 20px;
-            height: 20px;
-            stroke: rgba(255, 255, 255, 0.3);
-            fill: none;
-            stroke-width: 2;
-            stroke-linecap: round;
-            stroke-linejoin: round;
-        }
+    /* ── Navbar ────────────────────────────────────────────── */
+    nav {
+      background: rgba(0,0,0,0.18);
+      position: relative;
+      z-index: 20;
+    }
+    .nav-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem 1.25rem;
+    }
+    @media (min-width: 640px) { .nav-bar { padding: 1rem 2rem; } }
 
-        @keyframes pulse-down {
-            0%, 100% { transform: translateY(0); opacity: 0.4; }
-            50% { transform: translateY(6px); opacity: 0.8; }
-        }
+    .nav-logo {
+      color: #fff;
+      font-weight: 700;
+      font-size: 1rem;
+      display: inline-flex;
+      align-items: center;
+      height: 44px;
+      overflow: hidden;
+    }
+    /* Logo image is 2000x2000 with content centered — scale up to fill visible area */
+    .nav-logo img {
+      height: 180px;
+      width: auto;
+      display: block;
+      flex-shrink: 0;
+    }
+    .nav-logo-text { /* shown if no logo image is used */
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: #fff;
+      letter-spacing: -0.02em;
+    }
+    .nav-logo-text span { color: #f97316; }
 
-        /* Zone 2: Map section */
-        .map-section {
-            padding-top: 1rem;
-        }
+    .nav-links {
+      display: none;
+      list-style: none;
+      gap: 1.5rem;
+      align-items: center;
+    }
+    @media (min-width: 640px) { .nav-links { display: flex; } }
 
-        .map-section .map-container {
-            max-width: 1100px;
-        }
+    .nav-links a {
+      color: rgba(255,255,255,0.72);
+      font-size: 0.875rem;
+      font-weight: 500;
+      transition: color 0.15s;
+    }
+    .nav-links a:hover { color: #fff; }
+    .nav-links a.accent { color: #f97316; }
+    .nav-links a.accent:hover { color: #f97316; }
 
-        .map-section #map {
-            height: 540px;
-        }
+    .hamburger {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 5px;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      padding: 4px 2px;
+    }
+    @media (min-width: 640px) { .hamburger { display: none; } }
 
-        .map-instruction {
-            text-align: center;
-            font-size: 0.85rem;
-            color: rgba(255, 255, 255, 0.45);
-            margin-bottom: 1.25rem;
-        }
+    .hamburger span {
+      display: block;
+      width: 22px;
+      height: 2px;
+      border-radius: 2px;
+      background: #fff;
+      transition: transform 0.2s, opacity 0.2s;
+    }
+    .hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .hamburger.open span:nth-child(2) { opacity: 0; }
+    .hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
 
-        .rate-note {
-            text-align: center;
-            font-size: 0.75rem;
-            color: rgba(255, 255, 255, 0.35);
-            margin-top: 0.5rem;
-        }
+    .mobile-menu {
+      display: none;
+      background: rgba(15,36,68,0.98);
+      border-top: 1px solid rgba(255,255,255,0.08);
+      padding: 0.5rem 0 0.75rem;
+    }
+    .mobile-menu.open { display: block; }
+    @media (min-width: 640px) { .mobile-menu { display: none !important; } }
 
-        /* Zone 3: CTA */
-        .action-section {
-            text-align: center;
-            padding: 3rem 2rem;
-        }
+    .mobile-menu a {
+      display: block;
+      padding: 0.75rem 1.5rem;
+      color: rgba(255,255,255,0.8);
+      font-size: 0.95rem;
+      font-weight: 400;
+      border-left: 3px solid transparent;
+    }
+    .mobile-menu a.accent {
+      color: #f97316;
+      font-weight: 600;
+      border-left-color: #f97316;
+    }
 
-        .action-section p {
-            font-size: 0.95rem;
-            color: rgba(255, 255, 255, 0.55);
-            margin-bottom: 1.25rem;
-            max-width: 440px;
-            margin-left: auto;
-            margin-right: auto;
-        }
+    /* ── Hero ──────────────────────────────────────────────── */
+    #hero {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      text-align: center;
+      padding: clamp(60px,12vw,150px) clamp(1rem,5vw,2rem) clamp(3.5rem,8vw,5rem);
+      position: relative;
+    }
 
-        /* Responsive */
-        @media (max-width: 640px) {
-            .hero { min-height: 75vh; padding: 3rem 1.5rem 2rem; }
-            .hero h1 { font-size: 2rem; }
-            .hero .lede { font-size: 0.95rem; }
-            .map-section #map { height: 380px; }
-        }
+    .hero-eyebrow {
+      display: inline-block;
+      font-size: clamp(0.75rem, 2.5vw, 30px);
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: #f97316;
+      white-space: nowrap;
+    }
 
-        @media (min-width: 768px) {
-            .hero h1 { font-size: 3.2rem; }
-        }
-    </style>
-    <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"WebSite","name":"PA CareRate","url":"https://pacarerate.com","description":"Pennsylvania caregiver pay rate transparency tool","publisher":{"@type":"Organization","name":"Accel Direct LLC","address":{"@type":"PostalAddress","streetAddress":"502 W 7th St","addressLocality":"Erie","addressRegion":"PA","postalCode":"16502","addressCountry":"US"},"contactPoint":{"@type":"ContactPoint","email":"support@acceldirect.net","telephone":"+1-227-215-1525"}}}
-    </script>
+    .hero-h1 {
+      font-size: clamp(1rem, 4vw, 3.2rem);
+      font-weight: 800;
+      line-height: 1.15;
+      color: #fff;
+      max-width: 1100px;
+      margin: 0 0 10px;
+      letter-spacing: -0.03em;
+      white-space: nowrap;
+    }
+
+    .hero-p {
+      font-size: 1.1rem;
+      font-weight: 400;
+      line-height: 1.7;
+      color: rgba(255,255,255,0.6);
+      max-width: 1100px;
+      margin-bottom: 0.5rem;
+    }
+
+    .scroll-hint {
+      margin-top: auto;
+      padding-top: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      color: rgba(255,255,255,0.3);
+      font-size: 0.7rem;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      animation: pulseDown 2s ease-in-out infinite;
+    }
+    .scroll-hint svg {
+      width: 20px; height: 20px;
+      stroke: rgba(255,255,255,0.3);
+      fill: none;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    @keyframes pulseDown {
+      0%, 100% { transform: translateY(0); opacity: 0.4; }
+      50% { transform: translateY(6px); opacity: 0.8; }
+    }
+
+    /* ── Map section ───────────────────────────────────────── */
+    #map-section { }
+    .map-wrapper {
+      width: 100%;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 1.5rem 1rem 2.5rem;
+    }
+    @media (min-width: 640px) { .map-wrapper { padding-left: 1.5rem; padding-right: 1.5rem; } }
+    @media (min-width: 1024px) { .map-wrapper { padding-left: 2rem; padding-right: 2rem; } }
+
+    .map-instruction {
+      text-align: center;
+      font-size: 0.82rem;
+      color: rgba(255,255,255,0.5);
+      margin-bottom: 1rem;
+      letter-spacing: 0.02em;
+    }
+    .map-instruction.desktop { display: none; }
+    .map-instruction.mobile  { display: block; }
+    @media (min-width: 640px) {
+      .map-instruction.desktop { display: block; }
+      .map-instruction.mobile  { display: none; }
+    }
+
+    /* ── D3 Map container ──────────────────────────────────── */
+    #map-container {
+      position: relative;
+      width: 100%;
+      height: 0;
+      padding-bottom: min(52%, 560px);
+      border-radius: 12px;
+      overflow: hidden;
+      background: #0f2440;
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+    #map-container svg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    /* Loading spinner */
+    #map-loading {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      z-index: 2;
+      background: #0f2440;
+    }
+    #map-loading svg { width: 36px; height: 36px; animation: mapSpin 1s linear infinite; }
+    #map-loading span {
+      color: rgba(255,255,255,0.45);
+      font-size: 0.8rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    #map-error {
+      position: absolute;
+      inset: 0;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 2rem;
+      background: #0f2440;
+    }
+    #map-error svg { width: 28px; height: 28px; stroke: #f97316; fill: none; stroke-width: 2; }
+    #map-error p { color: rgba(255,255,255,0.55); font-size: 0.85rem; text-align: center; }
+
+    @keyframes mapSpin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+    @keyframes dataPulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.75); }
+    }
+
+    /* Zoom controls */
+    #zoom-controls {
+      position: absolute;
+      top: 14px;
+      left: 14px;
+      display: none;
+      flex-direction: column;
+      gap: 4px;
+      z-index: 5;
+    }
+    #zoom-controls.visible { display: flex; }
+    .zoom-btn {
+      width: 30px; height: 30px;
+      background: rgba(10,28,55,0.88);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 6px;
+      color: rgba(255,255,255,0.8);
+      font-size: 1.1rem;
+      line-height: 1;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(4px);
+      transition: background 0.15s, color 0.15s, border-color 0.15s;
+      font-family: Inter, sans-serif;
+    }
+    .zoom-btn.small { font-size: 0.75rem; }
+    .zoom-btn:hover {
+      background: rgba(249,115,22,0.2);
+      color: #f97316;
+      border-color: rgba(249,115,22,0.4);
+    }
+    #btn-reset { display: none; }
+    #btn-reset.visible { display: flex; }
+
+    /* Scroll hint */
+    #scroll-hint-map {
+      position: absolute;
+      bottom: 14px;
+      left: 14px;
+      font-size: 0.65rem;
+      color: rgba(255,255,255,0.3);
+      letter-spacing: 0.04em;
+      pointer-events: none;
+      display: none;
+    }
+    #scroll-hint-map.visible { display: block; }
+
+    /* Legend — static below map content on mobile, absolute overlay on desktop */
+    #map-legend {
+      background: rgba(10,28,55,0.5);
+      border-top: 1px solid rgba(255,255,255,0.08);
+      border-radius: 0 0 12px 12px;
+      padding: 10px 12px;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      z-index: 20;
+      position: relative;
+    }
+    #map-legend.visible { display: flex; }
+    @media (min-width: 640px) {
+      #map-legend {
+        position: absolute;
+        bottom: 14px;
+        right: 14px;
+        border: 1px solid rgba(255,255,255,0.1);
+        border-radius: 8px;
+        padding: 8px 12px;
+        backdrop-filter: blur(4px);
+        background: rgba(10,28,55,0.88);
+        justify-content: flex-end;
+      }
+    }
+
+    .early-badge {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      cursor: default;
+    }
+    .early-badge-inner {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.28rem;
+      background: rgba(249,115,22,0.12);
+      border: 1px solid rgba(249,115,22,0.28);
+      border-radius: 20px;
+      padding: 0.12rem 0.55rem;
+      font-size: 0.62rem;
+      font-weight: 700;
+      color: #f97316;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      white-space: nowrap;
+      margin-right: 4px;
+    }
+    .badge-dot {
+      width: 5px; height: 5px;
+      border-radius: 50%;
+      background: #f97316;
+      display: inline-block;
+      animation: dataPulse 2s ease-in-out infinite;
+    }
+    .badge-tooltip {
+      display: none;
+      position: absolute;
+      top: calc(100% + 8px);
+      left: 0;
+      background: #0f2340;
+      border: 1px solid rgba(249,115,22,0.35);
+      border-radius: 7px;
+      padding: 0.45rem 0.7rem;
+      font-size: 0.72rem;
+      color: rgba(255,255,255,0.75);
+      white-space: nowrap;
+      font-weight: 400;
+      pointer-events: none;
+      z-index: 50;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+    }
+    .badge-tooltip-arrow {
+      position: absolute;
+      bottom: 100%; left: 16px;
+      width: 0; height: 0;
+      border-left: 6px solid transparent;
+      border-right: 6px solid transparent;
+      border-bottom: 6px solid rgba(249,115,22,0.35);
+    }
+    .early-badge:hover .badge-tooltip { display: block; }
+
+    .legend-label {
+      font-size: 0.65rem;
+      color: rgba(255,255,255,0.45);
+    }
+    .legend-gradient {
+      width: 80px; height: 8px;
+      border-radius: 4px;
+      background: linear-gradient(to right, rgb(15,45,92), rgb(37,99,155), rgb(249,115,22));
+    }
+
+    /* Map tooltip */
+    #map-tooltip {
+      position: absolute;
+      pointer-events: none;
+      background: rgba(8,22,46,0.97);
+      border: 1px solid rgba(249,115,22,0.45);
+      border-radius: 8px;
+      padding: 9px 13px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.55);
+      min-width: 155px;
+      z-index: 10;
+      display: none;
+    }
+    #map-tooltip .tip-name {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 4px;
+    }
+    #map-tooltip .tip-median {
+      font-size: 0.78rem;
+      color: #f97316;
+      font-weight: 600;
+    }
+    #map-tooltip .tip-range {
+      font-size: 0.7rem;
+      color: rgba(255,255,255,0.45);
+      margin-top: 3px;
+    }
+
+    /* Map caption */
+    .map-caption {
+      text-align: center;
+      font-size: 0.72rem;
+      color: rgba(255,255,255,0.38);
+      margin-top: 0.6rem;
+    }
+
+    /* ── Detail panel + search column ─────────────────────── */
+    .panel-column {
+      display: flex;
+      justify-content: center;
+    }
+    .panel-inner {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: clamp(1.5rem, 4vw, 3rem);
+      width: 100%;
+      max-width: 520px;
+      padding: 0 1rem;
+    }
+
+    /* Detail panel */
+    #detail-panel {
+      width: 100%;
+      min-height: 0;
+    }
+    .detail-stats {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.35rem 0.5rem;
+      border-radius: 8px;
+      padding: 0.45rem 0.9rem;
+      animation: fadeSlideIn 0.2s ease-out;
+    }
+    .stat-item {
+      display: inline-flex;
+      align-items: center;
+      font-size: 0.78rem;
+      white-space: nowrap;
+    }
+    .stat-label { color: rgba(255,255,255,0.45); margin-right: 0.25rem; }
+    .stat-value { font-weight: 600; color: #fff; }
+    .stat-dot { margin: 0 0.6rem; color: rgba(255,255,255,0.18); }
+
+    @keyframes fadeSlideIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Search block */
+    .search-block { width: 100%; padding-top: 3rem; }
+    .search-label {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      margin-bottom: 0.5rem;
+      pointer-events: none;
+    }
+    .search-label svg {
+      width: 15px; height: 15px;
+      stroke: rgba(255,255,255,0.45);
+      fill: none;
+      stroke-width: 1.8;
+      flex-shrink: 0;
+    }
+    .search-label span {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: rgba(255,255,255,0.6);
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+    }
+
+    /* Search input wrapper */
+    .search-wrap { position: relative; }
+    #county-input {
+      width: 100%;
+      background: rgba(255,255,255,0.06);
+      border: 1.5px solid rgba(255,255,255,0.14);
+      border-radius: 10px;
+      padding: 0.75rem 2.75rem 0.75rem 1rem;
+      font-family: Inter, sans-serif;
+      font-size: 16px; /* 16px prevents iOS auto-zoom */
+      color: #fff;
+      outline: none;
+      min-height: 48px;
+      transition: border-color 0.18s, box-shadow 0.18s, background 0.18s;
+    }
+    #county-input::placeholder { color: rgba(255,255,255,0.35); }
+    #county-input:focus {
+      background: rgba(255,255,255,0.09);
+      border-color: rgba(249,115,22,0.6);
+      box-shadow: 0 0 0 3px rgba(249,115,22,0.12);
+    }
+
+    #clear-btn {
+      position: absolute;
+      right: 0.75rem;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(255,255,255,0.1);
+      border: none;
+      border-radius: 50%;
+      width: 22px; height: 22px;
+      cursor: pointer;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      color: rgba(255,255,255,0.6);
+      font-size: 0.75rem;
+      line-height: 1;
+      transition: background 0.15s;
+    }
+    #clear-btn.visible { display: flex; }
+    #clear-btn:hover { background: rgba(255,255,255,0.2); }
+
+    #search-dropdown {
+      position: absolute;
+      top: calc(100% + 6px);
+      left: 0; right: 0;
+      background: #132d4f;
+      border: 1.5px solid rgba(249,115,22,0.25);
+      border-radius: 10px;
+      max-height: 240px;
+      overflow-y: auto;
+      z-index: 50;
+      box-shadow: 0 12px 32px rgba(0,0,0,0.5);
+      display: none;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(255,255,255,0.15) transparent;
+    }
+    #search-dropdown.open { display: block; }
+
+    .drop-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.65rem 1rem;
+      cursor: pointer;
+      font-size: 0.88rem;
+      color: rgba(255,255,255,0.72);
+      background: transparent;
+      border-left: 2px solid transparent;
+      transition: background 0.1s;
+    }
+    .drop-item.active {
+      color: #fff;
+      background: rgba(249,115,22,0.14);
+      border-left-color: #f97316;
+      font-weight: 600;
+    }
+    .drop-item .drop-rate {
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: rgba(255,255,255,0.38);
+      font-variant-numeric: tabular-nums;
+    }
+    .drop-item.active .drop-rate { color: #f97316; }
+    .drop-empty {
+      padding: 1.1rem;
+      text-align: center;
+      font-size: 0.85rem;
+      color: rgba(255,255,255,0.3);
+      font-style: italic;
+    }
+
+    .search-hint {
+      font-size: 0.68rem;
+      color: rgba(255,255,255,0.3);
+      margin-top: 0.4rem;
+      display: none;
+    }
+    @media (min-width: 640px) { .search-hint { display: block; } }
+
+    /* ── CTA section ───────────────────────────────────────── */
+    #cta-section {
+      text-align: center;
+      padding: 2rem 2rem 4rem;
+    }
+    #cta-section p {
+      font-size: 0.95rem;
+      color: rgba(255,255,255,0.85);
+      margin-bottom: 1.25rem;
+      max-width: 440px;
+      margin-left: auto;
+      margin-right: auto;
+      line-height: 1.6;
+    }
+    .cta-btn {
+      display: inline-block;
+      background: #f97316;
+      color: #fff;
+      font-family: Inter, sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      padding: 0.875rem 2rem;
+      border-radius: 8px;
+      text-decoration: none;
+      transition: background 0.2s, transform 0.1s, box-shadow 0.2s;
+      box-shadow: 0 2px 8px rgba(249,115,22,0.2);
+    }
+    .cta-btn:hover {
+      background: #ea580c;
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(249,115,22,0.35);
+    }
+
+    /* ── Footer ────────────────────────────────────────────── */
+    footer {
+      text-align: center;
+      padding: 2rem 1.5rem;
+      font-size: 0.7rem;
+      color: rgba(255,255,255,0.35);
+      line-height: 1.6;
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+    footer a {
+      color: rgba(255,255,255,0.45);
+      border-bottom: 1px solid rgba(255,255,255,0.15);
+      transition: color 0.15s, border-color 0.15s;
+    }
+    footer a:hover {
+      color: rgba(255,255,255,0.7);
+      border-color: rgba(255,255,255,0.4);
+    }
+    footer p + p { margin-top: 0.5rem; }
+    footer p:last-child { margin-top: 0.75rem; }
+  </style>
 </head>
 <body>
-    <nav class="nav">
-        <a href="/" class="nav-brand">PA CareRate</a>
-        <ul class="nav-links">
-            <li><a href="#map" class="active">Rate Map</a></li>
-            <li><a href="/submit/">Share Your Rate</a></li>
-            <li><a href="/privacy.html">Privacy</a></li>
-        </ul>
-    </nav>
 
-    <!-- Zone 1: Statement Hero -->
-    <section class="hero">
-        <span class="eyebrow">PA Caregivers</span>
-        <h1>See what caregivers earn across PA.</h1>
-        <p class="lede">Anonymous, community-reported pay data for home health caregivers across all 67 Pennsylvania counties.</p>
+  <!-- Navbar -->
+  <nav>
+    <div class="nav-bar">
+      <a href="/" class="nav-logo">
+        <!--
+          Replace the src below with your actual logo file path.
+          If no image is provided, the text fallback below is shown.
+        -->
+        <img src="logo.png" alt="PA CareRate" onerror="this.style.display='none'; document.getElementById('logo-text').style.display='inline';" />
+        <span class="nav-logo-text" id="logo-text" style="display:none;">PA <span>CareRate</span></span>
+      </a>
 
-        <div class="scroll-hint">
-            <span>Explore the map</span>
-            <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-        </div>
+      <ul class="nav-links">
+        <li><a href="#map-section" class="accent">Rate Map</a></li>
+        <li><a href="/submit/">Share Your Rate</a></li>
+        <li><a href="/privacy.html">Privacy</a></li>
+      </ul>
+
+      <button class="hamburger" id="hamburger" aria-label="Open menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+
+    <div class="mobile-menu" id="mobile-menu">
+      <a href="#map-section" class="accent" onclick="closeMobileMenu()">Rate Map</a>
+      <a href="/submit/" onclick="closeMobileMenu()">Share Your Rate</a>
+      <a href="/privacy.html" onclick="closeMobileMenu()">Privacy</a>
+    </div>
+  </nav>
+
+  <!-- Main -->
+  <main>
+
+    <!-- Hero -->
+    <section id="hero">
+      <span class="hero-eyebrow">PA Caregivers</span>
+      <h1 class="hero-h1">See what caregivers earn across PA.</h1>
+      <p class="hero-p">Pay rate data for home health caregivers across all 67 Pennsylvania counties, built with the support of caregivers like you.</p>
+
+      <div class="scroll-hint">
+        <span>Explore the map</span>
+        <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
     </section>
 
-    <!-- Zone 2: Map -->
-    <section class="map-section" id="map-section">
-        <div class="map-container">
-            <p class="map-instruction">Click any county to see what caregivers are earning.</p>
+    <!-- Map Section -->
+    <section id="map-section">
+      <div class="map-wrapper">
 
-            <div id="map"></div>
-            <p class="rate-note">Rates shown are typical for caregivers working a standard 40-hour week.</p>
+        <p class="map-instruction desktop">Click a county on the map or search below</p>
+        <p class="map-instruction mobile">Tap a county or search below</p>
 
-            <div id="detail-panel" class="detail-panel">
-                <h2 id="panel-county-name"></h2>
-                <div id="panel-stats">
-                    <div class="stat">
-                        <span class="stat-label">Median Hourly Rate</span>
-                        <span class="stat-value" id="panel-median"></span>
-                    </div>
-                    <div class="stat">
-                        <span class="stat-label">Typical Range</span>
-                        <span class="stat-value" id="panel-range"></span>
-                    </div>
-                    <div class="stat">
-                        <span class="stat-label">Reports</span>
-                        <span class="stat-value" id="panel-count"></span>
-                    </div>
-                </div>
-                <div id="panel-insufficient" class="insufficient" style="display:none;">
-                    This county needs more reports before we can show rate data. <a href="/submit/">Help by sharing yours.</a>
-                </div>
+        <!-- D3 map -->
+        <div id="map-container">
+
+          <div id="map-loading">
+            <svg viewBox="0 0 50 50">
+              <circle cx="25" cy="25" r="20" fill="none" stroke="rgba(249,115,22,0.2)" stroke-width="4"/>
+              <path d="M25 5 A20 20 0 0 1 45 25" fill="none" stroke="#f97316" stroke-width="4" stroke-linecap="round"/>
+            </svg>
+            <span>Loading map…</span>
+          </div>
+
+          <div id="map-error">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            <p>Map failed to load. Check your connection and reload.</p>
+          </div>
+
+          <svg id="map-svg"></svg>
+
+          <!-- Zoom controls -->
+          <div id="zoom-controls">
+            <button class="zoom-btn" id="btn-zoom-in" title="Zoom in">+</button>
+            <button class="zoom-btn" id="btn-zoom-out" title="Zoom out">−</button>
+            <button class="zoom-btn small" id="btn-reset" title="Reset view">⤢</button>
+          </div>
+
+          <!-- Scroll hint -->
+          <div id="scroll-hint-map">Scroll to zoom · drag to pan</div>
+
+          <!-- Legend -->
+          <div id="map-legend">
+            <span class="early-badge">
+              <span class="early-badge-inner">
+                <span class="badge-dot"></span>
+                Early Data
+              </span>
+              <span class="badge-tooltip">
+                Rates estimated from public filings &amp; job postings —<br>
+                replaced with real rates as caregivers report.
+                <span class="badge-tooltip-arrow"></span>
+              </span>
+            </span>
+            <span class="legend-label" id="legend-min"></span>
+            <div class="legend-gradient"></div>
+            <span class="legend-label" id="legend-max"></span>
+          </div>
+
+          <!-- Tooltip -->
+          <div id="map-tooltip">
+            <div class="tip-name" id="tip-name"></div>
+            <div class="tip-median" id="tip-median"></div>
+            <div class="tip-range" id="tip-range"></div>
+          </div>
+
+        </div><!-- /map-container -->
+
+        <!-- Caption -->
+        <p class="map-caption">Rates estimated from public filings &amp; job postings, replaced as caregivers report. Rates shown are typical for caregivers working a standard 40-hour week.</p>
+
+        <!-- Detail panel + search -->
+        <div class="panel-column">
+          <div class="panel-inner">
+
+            <div class="search-block">
+              <div class="search-label">
+                <svg viewBox="0 0 20 20">
+                  <circle cx="9" cy="9" r="6"/>
+                  <path d="M14 14l3 3" stroke-linecap="round"/>
+                </svg>
+                <span>Find a County:</span>
+              </div>
+              <div class="search-wrap">
+                <input
+                  type="text"
+                  id="county-input"
+                  placeholder="Search 67 counties…"
+                  autocomplete="off"
+                  role="combobox"
+                  aria-expanded="false"
+                  aria-haspopup="listbox"
+                  aria-autocomplete="list"
+                />
+                <button id="clear-btn" aria-label="Clear search">✕</button>
+                <div id="search-dropdown" role="listbox"></div>
+              </div>
+              <p class="search-hint">↑↓ to navigate · Enter to select · Esc to close</p>
             </div>
+
+          </div>
         </div>
+
+      </div>
     </section>
 
-    <!-- Zone 3: CTA -->
-    <section class="action-section">
-        <p>Add your data to help build a clearer picture for everyone.</p>
-        <a href="/submit/" class="btn-primary">Contribute Your Rate</a>
+    <!-- CTA -->
+    <section id="cta-section">
+      <p>Help build a clearer picture for everyone.</p>
+      <a href="/submit/" class="cta-btn">Contribute Your Rate</a>
     </section>
 
-    <!-- Footer -->
-    <footer class="footer">
-        <p><a href="/privacy.html">Privacy Policy</a> &middot; <a href="/terms.html">Terms of Service</a></p>
-        <p style="margin-top:0.5rem;">Your individual data is never shared. Only county-level averages are displayed.</p>
-        <p style="margin-top:0.75rem;">PA CareRate is an Accel Direct service. Accel Direct LLC is not a home care registry or home care agency.<br>
-        502 W 7th St, Erie, PA 16502 &middot; support@acceldirect.net &middot; (227) 215-1525</p>
-    </footer>
+  </main>
 
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha384-cxOPjt7s7Iz04uaHJceBmS+qpjv2JkIHNVcuOrM+YHwZOmJGBXI00mdUXEq65HTH" crossorigin="anonymous"></script>
-    <script src="/js/config.js"></script>
-    <script src="/js/counties.js"></script>
-    <script src="/js/rates.js"></script>
-    <script src="/js/detail-panel.js"></script>
-    <script src="/js/map.js"></script>
+  <!-- Footer -->
+  <footer>
+    <p>
+      <a href="/privacy.html">Privacy Policy</a>
+      &nbsp;·&nbsp;
+      <a href="/terms.html">Terms of Service</a>
+    </p>
+    <p>Your individual data is never shared. Only county-level averages are displayed.</p>
+    <p>
+      PA CareRate is an Accel Direct service. Accel Direct LLC is not a home care registry or home care agency.<br>
+      502 W 7th St, Erie, PA 16502 · admin@pacarerate.com
+    </p>
+  </footer>
+
+  <script>
+    // ── County data (fetched from live API) ─────────────────────────────────
+    const API_BASE = 'https://api.pacarerate.com';
+    let RATE_MIN = 16.25;
+    let RATE_MAX = 18.50;
+    let counties = [];
+    let countyByName = {};
+
+    async function loadRateData() {
+      try {
+        const response = await fetch(API_BASE + '/api/rates');
+        if (!response.ok) throw new Error('API error');
+        const data = await response.json();
+        // API returns { "County Name": { median, p25, p75, report_count }, ... }
+        counties = Object.entries(data).map(([name, stats]) => ({
+          county: name,
+          median: stats.median,
+          p25: stats.p25,
+          p75: stats.p75,
+          reports: stats.report_count
+        }));
+        countyByName = Object.fromEntries(counties.map(c => [c.county, c]));
+        // Compute actual min/max from data
+        const medians = counties.map(c => c.median);
+        if (medians.length > 0) {
+          RATE_MIN = Math.min(...medians);
+          RATE_MAX = Math.max(...medians);
+        }
+      } catch (err) {
+        console.error('Failed to load rate data:', err);
+      }
+    }
+
+    // PA FIPS → county name
+    const PA_FIPS = {
+      '42001':'Adams','42003':'Allegheny','42005':'Armstrong','42007':'Beaver','42009':'Bedford',
+      '42011':'Berks','42013':'Blair','42015':'Bradford','42017':'Bucks','42019':'Butler',
+      '42021':'Cambria','42023':'Cameron','42025':'Carbon','42027':'Centre','42029':'Chester',
+      '42031':'Clarion','42033':'Clearfield','42035':'Clinton','42037':'Columbia','42039':'Crawford',
+      '42041':'Cumberland','42043':'Dauphin','42045':'Delaware','42047':'Elk','42049':'Erie',
+      '42051':'Fayette','42053':'Forest','42055':'Franklin','42057':'Fulton','42059':'Greene',
+      '42061':'Huntingdon','42063':'Indiana','42065':'Jefferson','42067':'Juniata','42069':'Lackawanna',
+      '42071':'Lancaster','42073':'Lawrence','42075':'Lebanon','42077':'Lehigh','42079':'Luzerne',
+      '42081':'Lycoming','42083':'McKean','42085':'Mercer','42087':'Mifflin','42089':'Monroe',
+      '42091':'Montgomery','42093':'Montour','42095':'Northampton','42097':'Northumberland',
+      '42099':'Perry','42101':'Philadelphia','42103':'Pike','42105':'Potter','42107':'Schuylkill',
+      '42109':'Snyder','42111':'Somerset','42113':'Sullivan','42115':'Susquehanna','42117':'Tioga',
+      '42119':'Union','42121':'Venango','42123':'Warren','42125':'Washington','42127':'Wayne',
+      '42129':'Westmoreland','42131':'Wyoming','42133':'York',
+    };
+
+    function getRateColor(median) {
+      const t = Math.max(0, Math.min(1, (median - RATE_MIN) / (RATE_MAX - RATE_MIN)));
+      if (t < 0.5) {
+        const s = t / 0.5;
+        return `rgb(${Math.round(15+s*(37-15))},${Math.round(45+s*(99-45))},${Math.round(92+s*(155-92))})`;
+      } else {
+        const s = (t - 0.5) / 0.5;
+        return `rgb(${Math.round(37+s*(249-37))},${Math.round(99+s*(115-99))},${Math.round(155+s*(22-155))})`;
+      }
+    }
+
+    // ── State ────────────────────────────────────────────────────────────────
+    let selectedCounty = null;
+    let isTouch = false;
+    window.addEventListener('touchstart', () => { isTouch = true; }, { once: true });
+
+    // ── Navbar hamburger ─────────────────────────────────────────────────────
+    const hamburger = document.getElementById('hamburger');
+    const mobileMenu = document.getElementById('mobile-menu');
+
+    hamburger.addEventListener('click', () => {
+      const open = mobileMenu.classList.toggle('open');
+      hamburger.classList.toggle('open', open);
+      hamburger.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+    });
+
+    function closeMobileMenu() {
+      mobileMenu.classList.remove('open');
+      hamburger.classList.remove('open');
+      hamburger.setAttribute('aria-label', 'Open menu');
+    }
+
+    // ── Detail panel ─────────────────────────────────────────────────────────
+    function selectCounty(county) {
+      selectedCounty = county;
+      // Sync search input
+      document.getElementById('county-input').value = county.county;
+      closeDropdown();
+      clearBtn.classList.toggle('visible', true);
+      // Update map strokes
+      updateMapStrokes();
+    }
+
+    // ── D3 Map ───────────────────────────────────────────────────────────────
+    const VW = 960, VH = 500;
+    const mapSvg = d3.select('#map-svg').attr('viewBox', `0 0 ${VW} ${VH}`);
+    const g = mapSvg.append('g').attr('id', 'zoom-group');
+    let zoomBehavior, zoomScale = 1;
+
+    // Map tooltip elements
+    const mapTooltip  = document.getElementById('map-tooltip');
+    const tipName     = document.getElementById('tip-name');
+    const tipMedian   = document.getElementById('tip-median');
+    const tipRange    = document.getElementById('tip-range');
+
+    function showTooltip(event, county) {
+      const container = document.getElementById('map-container');
+      const rect = container.getBoundingClientRect();
+      const tipW = 155;
+      if (isTouch) {
+        // Center tooltip at bottom of map on mobile (above the legend)
+        mapTooltip.style.left = Math.max(8, (container.clientWidth - tipW) / 2) + 'px';
+        mapTooltip.style.top = '';
+        mapTooltip.style.bottom = '14px';
+      } else {
+        const x = event.clientX - rect.left;
+        const y = event.clientY - rect.top;
+        const left = x + 16 + tipW > container.clientWidth ? x - tipW - 8 : x + 14;
+        mapTooltip.style.left = left + 'px';
+        mapTooltip.style.bottom = '';
+        mapTooltip.style.top  = Math.max(8, y - 52) + 'px';
+      }
+      mapTooltip.style.display = 'block';
+      tipName.textContent   = county.county + ' County';
+      tipMedian.textContent = `$${county.median.toFixed(2)}/hr median`;
+      tipRange.textContent  = `$${county.p25.toFixed(2)} – $${county.p75.toFixed(2)} range`;
+    }
+
+    function moveTooltip(event) {
+      if (isTouch) return;
+      const container = document.getElementById('map-container');
+      const rect = container.getBoundingClientRect();
+      const tipW = 155;
+      const x = event.clientX - rect.left;
+      const y = event.clientY - rect.top;
+      const left = x + 16 + tipW > container.clientWidth ? x - tipW - 8 : x + 14;
+      mapTooltip.style.left = left + 'px';
+      mapTooltip.style.top  = Math.max(8, y - 52) + 'px';
+    }
+
+    function hideTooltip() { mapTooltip.style.display = 'none'; }
+
+    function updateMapStrokes() {
+      g.selectAll('.pa-county')
+        .attr('stroke', d => PA_FIPS[String(d.id)] === selectedCounty?.county ? '#f97316' : '#1a365d')
+        .attr('stroke-width', d => PA_FIPS[String(d.id)] === selectedCounty?.county ? 2.5 : 0.8);
+    }
+
+    function setZoomed(scale) {
+      zoomScale = scale;
+      const zoomed = scale > 1.05;
+      document.getElementById('btn-reset').classList.toggle('visible', zoomed);
+      document.getElementById('scroll-hint-map').classList.toggle('visible', !zoomed);
+      document.getElementById('map-svg').style.cursor = zoomed ? 'grab' : 'default';
+    }
+
+    // Load rate data first, then load the map
+    loadRateData().then(() => {
+      // Update legend with live min/max
+      document.getElementById('legend-min').textContent = `$${RATE_MIN.toFixed(2)}`;
+      document.getElementById('legend-max').textContent = `$${RATE_MAX.toFixed(2)}`;
+
+      return fetch('https://cdn.jsdelivr.net/npm/us-atlas@3/counties-10m.json');
+    })
+      .then(r => r.json())
+      .then(us => {
+        document.getElementById('map-loading').style.display = 'none';
+        document.getElementById('zoom-controls').classList.add('visible');
+        document.getElementById('scroll-hint-map').classList.add('visible');
+        document.getElementById('map-legend').classList.add('visible');
+
+        // Zoom
+        zoomBehavior = d3.zoom()
+          .scaleExtent([1, 12])
+          .translateExtent([[0, 0], [VW, VH]])
+          .on('zoom', event => {
+            g.attr('transform', event.transform);
+            setZoomed(event.transform.k);
+          });
+        mapSvg.call(zoomBehavior);
+
+        // Filter PA counties
+        const allCounties = topojson.feature(us, us.objects.counties);
+        const paFeatures  = allCounties.features.filter(f => Math.floor(Number(f.id) / 1000) === 42);
+        const paGeoJSON   = { type: 'FeatureCollection', features: paFeatures };
+
+        const projection = d3.geoMercator().fitExtent([[20,20],[VW-20,VH-20]], paGeoJSON);
+        const pathGen    = d3.geoPath().projection(projection);
+
+        const countyGroup = g.append('g').attr('id', 'county-fills');
+        const labelGroup  = g.append('g').attr('id', 'county-labels').attr('pointer-events', 'none');
+
+        // County fills
+        countyGroup.selectAll('.pa-county')
+          .data(paFeatures)
+          .join('path')
+          .attr('class', 'pa-county')
+          .attr('d', d => pathGen(d) ?? '')
+          .attr('fill', d => {
+            const name = PA_FIPS[String(d.id)];
+            return name && countyByName[name] ? getRateColor(countyByName[name].median) : '#1a3a6e';
+          })
+          .attr('stroke', '#1a365d')
+          .attr('stroke-width', 0.8)
+          .attr('stroke-linejoin', 'round')
+          .style('cursor', 'pointer')
+          .on('mouseenter', function(event, d) {
+            if (isTouch) return;
+            const name = PA_FIPS[String(d.id)];
+            const data = name ? countyByName[name] : null;
+            if (!data) return;
+            d3.select(this).raise()
+              .attr('stroke', '#f97316')
+              .attr('stroke-width', 2.5)
+              .attr('filter', 'brightness(1.2)');
+            showTooltip(event, data);
+          })
+          .on('mousemove', function(event) { moveTooltip(event); })
+          .on('mouseleave', function(event, d) {
+            const name = PA_FIPS[String(d.id)];
+            const isSel = selectedCounty?.county === name;
+            d3.select(this)
+              .attr('stroke', isSel ? '#f97316' : '#1a365d')
+              .attr('stroke-width', isSel ? 2.5 : 0.8)
+              .attr('filter', null);
+            hideTooltip();
+          })
+          .on('click', function(event, d) {
+            const name = PA_FIPS[String(d.id)];
+            const data = name ? countyByName[name] : null;
+            if (data) {
+              selectCounty(data);
+              showTooltip(event, data);
+            }
+          });
+
+        // County labels
+        labelGroup.selectAll('.pa-county-label')
+          .data(paFeatures)
+          .join('text')
+          .attr('class', 'pa-county-label')
+          .attr('transform', d => { const [cx,cy] = pathGen.centroid(d); return `translate(${cx},${cy})`; })
+          .attr('text-anchor', 'middle')
+          .attr('dominant-baseline', 'middle')
+          .attr('pointer-events', 'none')
+          .attr('fill', 'rgba(255,255,255,0.72)')
+          .attr('font-size', '7px')
+          .attr('font-family', 'Inter, sans-serif')
+          .attr('font-weight', '600')
+          .attr('letter-spacing', '0.02em')
+          .text(d => { const n = PA_FIPS[String(d.id)] ?? ''; return n.length > 10 ? n.slice(0,9)+'.' : n; });
+
+        // State border
+        const allStates = topojson.feature(us, us.objects.states);
+        const paState   = allStates.features.find(f => Number(f.id) === 42);
+        if (paState) {
+          g.append('path')
+            .datum(paState)
+            .attr('d', pathGen(paState) ?? '')
+            .attr('fill', 'none')
+            .attr('stroke', 'rgba(255,255,255,0.45)')
+            .attr('stroke-width', 2)
+            .attr('stroke-linejoin', 'round')
+            .attr('pointer-events', 'none');
+        }
+      })
+      .catch(() => {
+        document.getElementById('map-loading').style.display = 'none';
+        const err = document.getElementById('map-error');
+        err.style.display = 'flex';
+      });
+
+    // Zoom buttons
+    document.getElementById('btn-zoom-in').addEventListener('click', () => {
+      mapSvg.transition().duration(300).call(zoomBehavior.scaleBy, 2);
+    });
+    document.getElementById('btn-zoom-out').addEventListener('click', () => {
+      mapSvg.transition().duration(300).call(zoomBehavior.scaleBy, 0.5);
+    });
+    document.getElementById('btn-reset').addEventListener('click', () => {
+      mapSvg.transition().duration(400).call(zoomBehavior.transform, d3.zoomIdentity);
+    });
+
+    // ── County search ────────────────────────────────────────────────────────
+    const input      = document.getElementById('county-input');
+    const clearBtn   = document.getElementById('clear-btn');
+    const dropdown   = document.getElementById('search-dropdown');
+    let activeIndex  = -1;
+    let matches      = [];
+
+    function openDropdown() {
+      dropdown.classList.add('open');
+      input.setAttribute('aria-expanded', 'true');
+    }
+    function closeDropdown() {
+      dropdown.classList.remove('open');
+      input.setAttribute('aria-expanded', 'false');
+      activeIndex = -1;
+    }
+
+    function renderDropdown() {
+      if (matches.length === 0) {
+        dropdown.innerHTML = '<div class="drop-empty">No counties found</div>';
+      } else {
+        dropdown.innerHTML = matches.map((item, i) => `
+          <div class="drop-item${i === activeIndex ? ' active' : ''}" data-index="${i}" role="option" aria-selected="${i === activeIndex}">
+            <span>${item.county}</span>
+            <span class="drop-rate">$${item.median.toFixed(2)}/hr</span>
+          </div>
+        `).join('');
+        // Bind click/hover
+        dropdown.querySelectorAll('.drop-item').forEach(el => {
+          el.addEventListener('mousedown', e => {
+            e.preventDefault();
+            const idx = parseInt(el.dataset.index);
+            selectCounty(matches[idx]);
+          });
+          el.addEventListener('mouseenter', () => {
+            activeIndex = parseInt(el.dataset.index);
+            renderDropdown();
+          });
+        });
+      }
+    }
+
+    input.addEventListener('input', () => {
+      const q = input.value.trim().toLowerCase();
+      clearBtn.classList.toggle('visible', input.value.length > 0);
+      activeIndex = -1;
+      if (q.length === 0) { matches = []; closeDropdown(); return; }
+      matches = counties.filter(c => c.county.toLowerCase().includes(q));
+      renderDropdown();
+      openDropdown();
+    });
+
+    input.addEventListener('focus', () => {
+      if (input.value.trim() && matches.length > 0) openDropdown();
+    });
+
+    input.addEventListener('blur', () => {
+      setTimeout(closeDropdown, 150);
+    });
+
+    input.addEventListener('keydown', e => {
+      if (!dropdown.classList.contains('open') || matches.length === 0) return;
+      if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        activeIndex = Math.min(activeIndex + 1, matches.length - 1);
+        renderDropdown();
+        scrollActiveItem();
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        activeIndex = Math.max(activeIndex - 1, 0);
+        renderDropdown();
+        scrollActiveItem();
+      } else if (e.key === 'Enter') {
+        e.preventDefault();
+        if (activeIndex >= 0 && matches[activeIndex]) selectCounty(matches[activeIndex]);
+      } else if (e.key === 'Escape') {
+        closeDropdown();
+      }
+    });
+
+    function scrollActiveItem() {
+      const el = dropdown.querySelector(`[data-index="${activeIndex}"]`);
+      if (el) el.scrollIntoView({ block: 'nearest' });
+    }
+
+    clearBtn.addEventListener('mousedown', e => {
+      e.preventDefault();
+      input.value = '';
+      matches = [];
+      clearBtn.classList.remove('visible');
+      closeDropdown();
+      input.focus();
+    });
+  </script>
 </body>
 </html>
