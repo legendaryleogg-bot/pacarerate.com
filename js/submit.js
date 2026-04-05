@@ -23,6 +23,16 @@
     }
   }
 
+  // Pre-fill from gate submission if available
+  var gateRate = localStorage.getItem('pacarerate_gate_rate');
+  var gateCounty = localStorage.getItem('pacarerate_gate_county');
+  if (gateRate) {
+    document.getElementById('rate').value = gateRate;
+  }
+  if (gateCounty) {
+    countySelect.value = gateCounty;
+  }
+
   // Satisfaction radio toggle
   document.querySelectorAll('.satisfaction-group label').forEach(function (label) {
     label.addEventListener('click', function () {
@@ -113,6 +123,8 @@
 
       formWrapper.style.display = 'none';
       successEl.classList.add('visible');
+      // Unlock the map gate so returning to the homepage shows the map
+      try { localStorage.setItem('pacarerate_unlocked', '1'); } catch (e) {}
     } catch (err) {
       errorEl.textContent = 'Network error. Please check your connection and try again.';
       errorEl.classList.add('visible');

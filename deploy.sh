@@ -22,6 +22,7 @@ cp sitemap.xml "$DIST/"
 cp _headers "$DIST/"
 
 # Copy directories
+cp -r .well-known "$DIST/"
 cp -r css "$DIST/"
 cp -r js "$DIST/"
 cp -r submit "$DIST/"

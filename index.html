@@ -21,8 +21,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-  <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
-  <script src="https://cdn.jsdelivr.net/npm/topojson-client@3/dist/topojson-client.min.js"></script>
+  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" async defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/d3@7" integrity="sha384-CjloA8y00+1SDAUkjs099PVfnY2KmDC2BZnws9kh8D/lX1s46w6EPhpXdqMfjK6i" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/topojson-client@3/dist/topojson-client.min.js" integrity="sha384-Ukv1p/xTma6P4/2bY5KzWBw+ydSpXmhCMtyciIQVDJ1RmOxtCYNMF1uXT9T63H67" crossorigin="anonymous"></script>
   <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"WebSite","name":"PA CareRate","url":"https://pacarerate.com","description":"Pennsylvania caregiver pay rate transparency tool","publisher":{"@type":"Organization","name":"Accel Direct LLC","address":{"@type":"PostalAddress","streetAddress":"502 W 7th Street, Suite 100","addressLocality":"Erie","addressRegion":"PA","postalCode":"16502","addressCountry":"US"},"contactPoint":{"@type":"ContactPoint","email":"admin@pacarerate.com"}}}
   </script>
@@ -35,11 +36,14 @@
     body {
       font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       background: #1a365d;
-      color: #fff;
+      color: #e2e8f0;
       min-height: 100vh;
+      min-height: 100dvh;
+      -webkit-font-smoothing: antialiased;
     }
 
     a { text-decoration: none; }
+    .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); border: 0; }
 
     /* ── Navbar ────────────────────────────────────────────── */
     nav {
@@ -164,6 +168,7 @@
       text-transform: uppercase;
       color: #f97316;
       white-space: nowrap;
+      margin-bottom: 0.75rem;
     }
 
     .hero-h1 {
@@ -181,7 +186,7 @@
       font-size: 1.1rem;
       font-weight: 400;
       line-height: 1.7;
-      color: rgba(255,255,255,0.6);
+      color: #b0bec5;
       max-width: 1100px;
       margin-bottom: 0.5rem;
     }
@@ -193,7 +198,7 @@
       flex-direction: column;
       align-items: center;
       gap: 0.5rem;
-      color: rgba(255,255,255,0.3);
+      color: #94a3b8;
       font-size: 0.7rem;
       font-weight: 500;
       letter-spacing: 0.08em;
@@ -228,7 +233,7 @@
     .map-instruction {
       text-align: center;
       font-size: 0.82rem;
-      color: rgba(255,255,255,0.5);
+      color: #b0bec5;
       margin-bottom: 1rem;
       letter-spacing: 0.02em;
     }
@@ -249,6 +254,7 @@
       overflow: hidden;
       background: #0f2440;
       border: 1px solid rgba(255,255,255,0.08);
+      touch-action: pan-y;
     }
     #map-container svg {
       position: absolute;
@@ -273,7 +279,7 @@
     }
     #map-loading svg { width: 36px; height: 36px; animation: mapSpin 1s linear infinite; }
     #map-loading span {
-      color: rgba(255,255,255,0.45);
+      color: #94a3b8;
       font-size: 0.8rem;
       letter-spacing: 0.08em;
       text-transform: uppercase;
@@ -290,7 +296,7 @@
       background: #0f2440;
     }
     #map-error svg { width: 28px; height: 28px; stroke: #f97316; fill: none; stroke-width: 2; }
-    #map-error p { color: rgba(255,255,255,0.55); font-size: 0.85rem; text-align: center; }
+    #map-error p { color: #b0bec5; font-size: 0.85rem; text-align: center; }
 
     @keyframes mapSpin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
     @keyframes dataPulse {
@@ -340,7 +346,7 @@
       bottom: 14px;
       left: 14px;
       font-size: 0.65rem;
-      color: rgba(255,255,255,0.3);
+      color: #94a3b8;
       letter-spacing: 0.04em;
       pointer-events: none;
       display: none;
@@ -433,7 +439,7 @@
 
     .legend-label {
       font-size: 0.65rem;
-      color: rgba(255,255,255,0.45);
+      color: #94a3b8;
     }
     .legend-gradient {
       width: 80px; height: 8px;
@@ -467,7 +473,7 @@
     }
     #map-tooltip .tip-range {
       font-size: 0.7rem;
-      color: rgba(255,255,255,0.45);
+      color: #94a3b8;
       margin-top: 3px;
     }
 
@@ -475,7 +481,7 @@
     .map-caption {
       text-align: center;
       font-size: 0.72rem;
-      color: rgba(255,255,255,0.38);
+      color: #94a3b8;
       margin-top: 0.6rem;
     }
 
@@ -514,7 +520,7 @@
       font-size: 0.78rem;
       white-space: nowrap;
     }
-    .stat-label { color: rgba(255,255,255,0.45); margin-right: 0.25rem; }
+    .stat-label { color: #94a3b8; margin-right: 0.25rem; }
     .stat-value { font-weight: 600; color: #fff; }
     .stat-dot { margin: 0 0.6rem; color: rgba(255,255,255,0.18); }
 
@@ -542,7 +548,7 @@
     .search-label span {
       font-size: 0.75rem;
       font-weight: 600;
-      color: rgba(255,255,255,0.6);
+      color: #b0bec5;
       letter-spacing: 0.07em;
       text-transform: uppercase;
     }
@@ -562,7 +568,7 @@
       min-height: 48px;
       transition: border-color 0.18s, box-shadow 0.18s, background 0.18s;
     }
-    #county-input::placeholder { color: rgba(255,255,255,0.35); }
+    #county-input::placeholder { color: #94a3b8; }
     #county-input:focus {
       background: rgba(255,255,255,0.09);
       border-color: rgba(249,115,22,0.6);
@@ -582,7 +588,7 @@
       display: none;
       align-items: center;
       justify-content: center;
-      color: rgba(255,255,255,0.6);
+      color: #b0bec5;
       font-size: 0.75rem;
       line-height: 1;
       transition: background 0.15s;
@@ -628,7 +634,7 @@
     .drop-item .drop-rate {
       font-size: 0.82rem;
       font-weight: 600;
-      color: rgba(255,255,255,0.38);
+      color: #94a3b8;
       font-variant-numeric: tabular-nums;
     }
     .drop-item.active .drop-rate { color: #f97316; }
@@ -636,13 +642,13 @@
       padding: 1.1rem;
       text-align: center;
       font-size: 0.85rem;
-      color: rgba(255,255,255,0.3);
+      color: #94a3b8;
       font-style: italic;
     }
 
     .search-hint {
       font-size: 0.68rem;
-      color: rgba(255,255,255,0.3);
+      color: #94a3b8;
       margin-top: 0.4rem;
       display: none;
     }
@@ -656,7 +662,7 @@
     #cta-section p {
       font-size: 0.95rem;
       color: rgba(255,255,255,0.85);
-      margin-bottom: 1.25rem;
+      margin-top: 1rem;
       max-width: 440px;
       margin-left: auto;
       margin-right: auto;
@@ -665,11 +671,12 @@
     .cta-btn {
       display: inline-block;
       background: #f97316;
-      color: #fff;
+      color: #0a1628;
       font-family: Inter, sans-serif;
       font-size: 1rem;
       font-weight: 700;
       padding: 0.875rem 2rem;
+      min-height: 44px;
       border-radius: 8px;
       text-decoration: none;
       transition: background 0.2s, transform 0.1s, box-shadow 0.2s;
@@ -686,12 +693,12 @@
       text-align: center;
       padding: 2rem 1.5rem;
       font-size: 0.7rem;
-      color: rgba(255,255,255,0.35);
+      color: #94a3b8;
       line-height: 1.6;
       border-top: 1px solid rgba(255,255,255,0.06);
     }
     footer a {
-      color: rgba(255,255,255,0.45);
+      color: #94a3b8;
       border-bottom: 1px solid rgba(255,255,255,0.15);
       transition: color 0.15s, border-color 0.15s;
     }
@@ -701,6 +708,116 @@
     }
     footer p + p { margin-top: 0.5rem; }
     footer p:last-child { margin-top: 0.75rem; }
+
+    /* ── Map gate (locked state) ──────────────────────────── */
+    #map-container.locked svg { filter: blur(8px) saturate(0.2) brightness(0.6); pointer-events: none; }
+    #map-container.locked #zoom-controls,
+    #map-container.locked #map-legend,
+    #map-container.locked #scroll-hint-map,
+    #map-container.locked #map-tooltip { display: none !important; }
+    .map-instruction.locked { display: none !important; }
+
+    .map-gate {
+      position: absolute;
+      inset: 0;
+      z-index: 30;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: rgba(10,28,55,0.7);
+      backdrop-filter: blur(2px);
+      padding: 2rem;
+      text-align: center;
+    }
+    .map-gate.hidden { display: none; }
+
+    .gate-icon {
+      width: 28px !important; height: 28px !important;
+      min-width: 28px; max-width: 28px;
+      min-height: 28px; max-height: 28px;
+      flex: 0 0 28px;
+      stroke: #f97316; fill: none;
+      stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round;
+      margin-bottom: 0.75rem;
+      z-index: 31;
+    }
+    .gate-title {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 0.4rem;
+      z-index: 31;
+    }
+    .gate-sub {
+      font-size: 0.85rem;
+      color: #b0bec5;
+      margin-bottom: 1.25rem;
+      max-width: 340px;
+      line-height: 1.5;
+      z-index: 31;
+    }
+
+    .gate-form {
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+      width: 100%;
+      max-width: 300px;
+    }
+    .gate-row {
+      display: flex;
+      gap: 0.5rem;
+    }
+    .gate-form input, .gate-form select {
+      width: 100%;
+      background: rgba(255,255,255,0.08);
+      border: 1.5px solid rgba(255,255,255,0.18);
+      border-radius: 8px;
+      padding: 0.65rem 0.75rem;
+      font-family: Inter, sans-serif;
+      font-size: 16px;
+      color: #fff;
+      outline: none;
+      min-height: 44px;
+      transition: border-color 0.15s;
+    }
+    .gate-form input::placeholder { color: #94a3b8; }
+    .gate-form select { color: rgba(255,255,255,0.7); }
+    .gate-form select option { background: #1a365d; color: #fff; }
+    .gate-form input:focus, .gate-form select:focus {
+      border-color: rgba(249,115,22,0.6);
+    }
+    .gate-btn {
+      background: #f97316;
+      color: #0a1628;
+      font-family: Inter, sans-serif;
+      font-size: 0.95rem;
+      font-weight: 700;
+      padding: 0.75rem;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.2s;
+      min-height: 44px;
+    }
+    .gate-btn:hover { background: #ea580c; }
+    .gate-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .gate-msg {
+      font-size: 0.75rem;
+      color: #f97316;
+      min-height: 1.2em;
+    }
+    .gate-fine {
+      font-size: 0.65rem;
+      color: #94a3b8;
+      margin-top: 0.5rem;
+      max-width: 300px;
+      line-height: 1.5;
+    }
+
+    .search-block.locked, .map-caption.locked, #cta-section.locked { opacity: 0.3; pointer-events: none; }
+    .gate-form { z-index: 31; }
   </style>
 </head>
 <body>
@@ -754,8 +871,8 @@
     <section id="map-section">
       <div class="map-wrapper">
 
-        <p class="map-instruction desktop">Click a county on the map or search below</p>
-        <p class="map-instruction mobile">Tap a county or search below</p>
+        <p class="map-instruction desktop" id="map-instr-desktop">Click a county on the map or search below</p>
+        <p class="map-instruction mobile" id="map-instr-mobile">Tap a county or search below</p>
 
         <!-- D3 map -->
         <div id="map-container">
@@ -774,6 +891,26 @@
           </div>
 
           <svg id="map-svg"></svg>
+
+          <!-- Gate overlay — shown until user submits a rate -->
+          <div class="map-gate" id="map-gate">
+            <div class="gate-title">Share your rate to unlock the map</div>
+            <div class="gate-sub">Takes 10 seconds. Your data stays anonymous — only county averages are shown.</div>
+            <div class="gate-form" id="gate-form">
+              <div class="gate-row">
+                <label for="gate-rate" class="sr-only">Hourly rate</label>
+                <input type="number" id="gate-rate" min="5" max="75" step="0.25" placeholder="$/hr (e.g. 15.50)" aria-label="Your hourly rate">
+                <label for="gate-county" class="sr-only">County</label>
+                <select id="gate-county" aria-label="Your county">
+                  <option value="">County</option>
+                </select>
+              </div>
+              <div id="gate-turnstile" style="display:none;"></div>
+              <button class="gate-btn" id="gate-submit" type="button">Unlock the Map</button>
+              <div class="gate-msg" id="gate-msg"></div>
+            </div>
+            <div class="gate-fine">Your individual rate is never displayed. Only county-level averages are shown.</div>
+          </div>
 
           <!-- Zoom controls -->
           <div id="zoom-controls">
@@ -852,8 +989,8 @@
 
     <!-- CTA -->
     <section id="cta-section">
-      <p>Help build a clearer picture for everyone.</p>
-      <a href="/submit/" class="cta-btn">Contribute Your Rate</a>
+      <a href="/submit/" class="cta-btn" id="cta-btn">Contribute Your Rate</a>
+      <p id="cta-text">Help build a clearer picture for everyone.</p>
     </section>
 
   </main>
@@ -873,6 +1010,174 @@
   </footer>
 
   <script>
+    // ── Gate state ───────────────────────────────────────────────────────────
+    const UNLOCK_KEY = 'pacarerate_unlocked';
+    let mapUnlocked = localStorage.getItem(UNLOCK_KEY) === '1';
+
+    // PA counties for the gate dropdown
+    const PA_COUNTY_LIST = [
+      "Adams","Allegheny","Armstrong","Beaver","Bedford","Berks","Blair","Bradford",
+      "Bucks","Butler","Cambria","Cameron","Carbon","Centre","Chester","Clarion",
+      "Clearfield","Clinton","Columbia","Crawford","Cumberland","Dauphin","Delaware",
+      "Elk","Erie","Fayette","Forest","Franklin","Fulton","Greene","Huntingdon",
+      "Indiana","Jefferson","Juniata","Lackawanna","Lancaster","Lawrence","Lebanon",
+      "Lehigh","Luzerne","Lycoming","McKean","Mercer","Mifflin","Monroe","Montgomery",
+      "Montour","Northampton","Northumberland","Perry","Philadelphia","Pike","Potter",
+      "Schuylkill","Snyder","Somerset","Sullivan","Susquehanna","Tioga","Union",
+      "Venango","Warren","Washington","Wayne","Westmoreland","Wyoming","York"
+    ];
+
+    function initGate() {
+      const gate = document.getElementById('map-gate');
+      const container = document.getElementById('map-container');
+      const searchBlock = document.querySelector('.search-block');
+
+      if (mapUnlocked) {
+        gate.classList.add('hidden');
+        // Update CTA for returning unlocked users
+        const ctaBtn = document.getElementById('cta-btn');
+        const ctaText = document.getElementById('cta-text');
+        if (ctaBtn) ctaBtn.textContent = 'Contribute More';
+        if (ctaText) ctaText.textContent = 'Add employer, job type, and other details to your submission.';
+        return;
+      }
+
+      // Lock the map and related elements
+      container.classList.add('locked');
+      if (searchBlock) searchBlock.classList.add('locked');
+      const caption = document.querySelector('.map-caption');
+      const ctaSection = document.getElementById('cta-section');
+      if (caption) caption.classList.add('locked');
+      if (ctaSection) ctaSection.classList.add('locked');
+      document.querySelectorAll('.map-instruction').forEach(el => el.classList.add('locked'));
+
+      // Populate county dropdown
+      const select = document.getElementById('gate-county');
+      PA_COUNTY_LIST.forEach(c => {
+        const opt = document.createElement('option');
+        opt.value = c;
+        opt.textContent = c;
+        select.appendChild(opt);
+      });
+
+      // Render Turnstile in invisible mode — no visible widget
+      let gateTurnstileId = null;
+      let pendingSubmit = null;
+
+      function renderGateTurnstile() {
+        if (typeof turnstile !== 'undefined') {
+          gateTurnstileId = turnstile.render('#gate-turnstile', {
+            sitekey: '0x4AAAAAACzAMQ1ULEiIS32g',
+            size: 'compact',
+            execution: 'execute',
+            appearance: 'interaction-only',
+            callback: function(token) {
+              // Token received — if a submit is pending, fire it now
+              if (pendingSubmit) {
+                const fn = pendingSubmit;
+                pendingSubmit = null;
+                fn(token);
+              }
+            }
+          });
+        } else {
+          setTimeout(renderGateTurnstile, 200);
+        }
+      }
+      renderGateTurnstile();
+
+      // Handle submit
+      document.getElementById('gate-submit').addEventListener('click', function() {
+        const rate = parseFloat(document.getElementById('gate-rate').value);
+        const county = document.getElementById('gate-county').value;
+        const msg = document.getElementById('gate-msg');
+        const btn = this;
+
+        if (!rate || rate < 5 || rate > 75) {
+          msg.textContent = 'Enter an hourly rate between $5 and $75.';
+          return;
+        }
+        if (!county) {
+          msg.textContent = 'Select your county.';
+          return;
+        }
+
+        msg.textContent = '';
+        btn.disabled = true;
+        btn.textContent = 'Verifying…';
+
+        // Set up the pending submit, then execute Turnstile
+        pendingSubmit = function(token) {
+          doGateSubmit(token, rate, county, btn, msg);
+        };
+
+        try {
+          turnstile.execute('#gate-turnstile');
+        } catch (e) {
+          msg.textContent = 'Verification failed. Please try again.';
+          btn.disabled = false;
+          btn.textContent = 'Unlock the Map';
+          pendingSubmit = null;
+        }
+      });
+
+      async function doGateSubmit(turnstileToken, rate, county, btn, msg) {
+        btn.textContent = 'Submitting…';
+
+        try {
+          const response = await fetch(API_BASE + '/api/submit', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ rate, county, state: 'PA', turnstile_token: turnstileToken })
+          });
+
+          if (!response.ok) {
+            const err = await response.json().catch(() => ({}));
+            throw new Error(err.error || 'Submission failed');
+          }
+
+          // Unlock + store gate data for /submit/ pre-fill
+          localStorage.setItem(UNLOCK_KEY, '1');
+          localStorage.setItem('pacarerate_gate_rate', rate);
+          localStorage.setItem('pacarerate_gate_county', county);
+          mapUnlocked = true;
+          gate.classList.add('hidden');
+          container.classList.remove('locked');
+          if (searchBlock) searchBlock.classList.remove('locked');
+          const captionEl = document.querySelector('.map-caption');
+          const ctaEl = document.getElementById('cta-section');
+          if (captionEl) captionEl.classList.remove('locked');
+          if (ctaEl) ctaEl.classList.remove('locked');
+          document.querySelectorAll('.map-instruction').forEach(el => el.classList.remove('locked'));
+
+          // Update CTA
+          const ctaBtnEl = document.getElementById('cta-btn');
+          const ctaTextEl = document.getElementById('cta-text');
+          if (ctaBtnEl) ctaBtnEl.textContent = 'Contribute More';
+          if (ctaTextEl) ctaTextEl.textContent = 'Add employer, job type, and other details to your submission.';
+
+          // Reload rate data and recolor the map
+          await loadRateData();
+          document.getElementById('legend-min').textContent = '$' + RATE_MIN.toFixed(2);
+          document.getElementById('legend-max').textContent = '$' + RATE_MAX.toFixed(2);
+          d3.selectAll('.pa-county').attr('fill', function(d) {
+            const name = PA_FIPS[String(d.id)];
+            return name && countyByName[name] ? getRateColor(countyByName[name].median) : '#1a3a6e';
+          });
+
+        } catch (err) {
+          msg.textContent = err.message || 'Something went wrong. Try again.';
+          btn.disabled = false;
+          btn.textContent = 'Unlock the Map';
+          // Reset Turnstile for retry
+          if (gateTurnstileId !== null) try { turnstile.reset(gateTurnstileId); } catch(e) {}
+        }
+      }
+    }
+
+    // Initialize gate immediately — don't wait for map data
+    initGate();
+
     // ── County data (fetched from live API) ─────────────────────────────────
     const API_BASE = 'https://api.pacarerate.com';
     let RATE_MIN = 16.25;
@@ -1073,6 +1378,7 @@
           .attr('d', d => pathGen(d) ?? '')
           .attr('fill', d => {
             const name = PA_FIPS[String(d.id)];
+            if (!mapUnlocked) return '#1a3a6e';
             return name && countyByName[name] ? getRateColor(countyByName[name].median) : '#1a3a6e';
           })
           .attr('stroke', '#1a365d')

@@ -3,6 +3,10 @@ import { normalizeEmployerName } from './normalize.js';
 import { hashIP, checkRateLimit, recordSubmission, checkDuplicate } from './integrity.js';
 
 const TURNSTILE_VERIFY_URL = 'https://challenges.cloudflare.com/turnstile/v0/siteverify';
+const TURNSTILE_ALLOWED_HOSTNAMES = new Set([
+  'pacarerate.com',
+  'staging.pacarerate-com.pages.dev'
+]);
 
 async function verifyTurnstile(token, secretKey, ip) {
   const formData = new URLSearchParams();
@@ -15,7 +19,15 @@ async function verifyTurnstile(token, secretKey, ip) {
     body: formData,
   });
   const outcome = await result.json();
-  return outcome.success === true;
+  if (!outcome.success) return false;
+
+  // Validate hostname — reject tokens from unexpected domains
+  if (outcome.hostname && !TURNSTILE_ALLOWED_HOSTNAMES.has(outcome.hostname) &&
+      !/^[a-z0-9-]+\.pacarerate-com\.pages\.dev$/.test(outcome.hostname)) {
+    return false;
+  }
+
+  return true;
 }
 
 const MAX_BODY_SIZE = 10 * 1024; // 10KB
@@ -29,7 +41,7 @@ export async function handleSubmit(request, env) {
     });
   }
 
-  // Body size limit
+  // Body size limit — check header first, then actual body
   const contentLength = parseInt(request.headers.get('content-length') || '0', 10);
   if (contentLength > MAX_BODY_SIZE) {
     return new Response(JSON.stringify({ error: 'Request too large' }), {
@@ -40,7 +52,14 @@ export async function handleSubmit(request, env) {
 
   let body;
   try {
-    body = await request.json();
+    const rawText = await request.text();
+    if (rawText.length > MAX_BODY_SIZE) {
+      return new Response(JSON.stringify({ error: 'Request too large' }), {
+        status: 413,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    }
+    body = JSON.parse(rawText);
   } catch {
     return new Response(JSON.stringify({ error: 'Invalid JSON' }), {
       status: 400,
@@ -83,8 +102,7 @@ export async function handleSubmit(request, env) {
   }
 
   const rate = Number(body.rate);
-  const isDuplicate = await checkDuplicate(env.DB, ipHash, body.county, rate);
-  const status = isDuplicate ? 'flagged' : 'active';
+  const existingId = await checkDuplicate(env.DB, ipHash, body.county, rate);
 
   const employerNameRaw = body.employer_name || null;
   const employerName = normalizeEmployerName(employerNameRaw);
@@ -94,30 +112,39 @@ export async function handleSubmit(request, env) {
   const jobType = body.job_type || null;
   const benefits = body.benefits ? JSON.stringify(body.benefits) : null;
 
-  await env.DB.prepare(`
-    INSERT INTO submissions (rate, state, county, employer_name_raw, employer_name,
-      job_type, hours_per_week, benefits, satisfaction, status, ip_hash)
-    VALUES (?, 'PA', ?, ?, ?, ?, ?, ?, ?, ?, ?)
-  `).bind(
-    rate, body.county, employerNameRaw, employerName,
-    jobType, hoursPerWeek, benefits, satisfaction, status, ipHash
-  ).run();
+  if (existingId) {
+    // Enrich existing submission (same IP + county + rate within 24h)
+    await env.DB.prepare(`
+      UPDATE submissions SET
+        employer_name_raw = COALESCE(?, employer_name_raw),
+        employer_name = COALESCE(?, employer_name),
+        job_type = COALESCE(?, job_type),
+        hours_per_week = COALESCE(?, hours_per_week),
+        benefits = COALESCE(?, benefits),
+        satisfaction = COALESCE(?, satisfaction)
+      WHERE id = ?
+    `).bind(
+      employerNameRaw, employerName,
+      jobType, hoursPerWeek, benefits, satisfaction,
+      existingId
+    ).run();
+  } else {
+    // New submission
+    await env.DB.prepare(`
+      INSERT INTO submissions (rate, state, county, employer_name_raw, employer_name,
+        job_type, hours_per_week, benefits, satisfaction, status, ip_hash)
+      VALUES (?, 'PA', ?, ?, ?, ?, ?, ?, ?, 'active', ?)
+    `).bind(
+      rate, body.county, employerNameRaw, employerName,
+      jobType, hoursPerWeek, benefits, satisfaction, ipHash
+    ).run();
 
-  await recordSubmission(env.DB, ipHash);
-
-  if (isDuplicate) {
-    return new Response(JSON.stringify({
-      success: true,
-      message: 'Thank you! Your submission is being reviewed.'
-    }), {
-      status: 200,
-      headers: { 'Content-Type': 'application/json' },
-    });
+    await recordSubmission(env.DB, ipHash);
   }
 
   return new Response(JSON.stringify({
     success: true,
-    message: 'Thank you for sharing your rate!'
+    message: existingId ? 'Thank you! Your details have been added.' : 'Thank you for sharing your rate!'
   }), {
     status: 200,
     headers: { 'Content-Type': 'application/json' },

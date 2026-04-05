@@ -3,14 +3,19 @@ import { handleSubmit } from './submit.js';
 import { handleRatesAll, handleRatesCounty } from './rates.js';
 import { PA_COUNTIES_SET } from './counties.js';
 
-function getCorsHeaders(env) {
+function getCorsHeaders(env, request) {
+  const origin = request ? request.headers.get('Origin') : null;
+  const primary = env.SITE_ORIGIN || 'https://pacarerate.com';
+  const allowed = origin && (origin === primary || /^https:\/\/[a-z0-9-]+\.pacarerate-com\.pages\.dev$/.test(origin))
+    ? origin : primary;
   return {
-    'Access-Control-Allow-Origin': env.SITE_ORIGIN || 'https://pacarerate.com',
+    'Access-Control-Allow-Origin': allowed,
     'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
     'Access-Control-Allow-Headers': 'Content-Type',
     'X-Content-Type-Options': 'nosniff',
     'X-Frame-Options': 'DENY',
     'Strict-Transport-Security': 'max-age=31536000; includeSubDomains',
+    'Vary': 'Origin',
   };
 }
 
@@ -27,7 +32,7 @@ function corsResponse(response, corsHeaders) {
 
 export default {
   async fetch(request, env) {
-    const CORS_HEADERS = getCorsHeaders(env);
+    const CORS_HEADERS = getCorsHeaders(env, request);
 
     if (request.method === 'OPTIONS') {
       return new Response(null, { status: 204, headers: CORS_HEADERS });

@@ -65,5 +65,5 @@ export async function checkDuplicate(db, ipHash, county, rate) {
     LIMIT 1
   `).bind(ipHash, county, rate, windowStart).first();
 
-  return !!row;
+  return row ? row.id : null;
 }
