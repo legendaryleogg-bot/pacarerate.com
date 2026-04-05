@@ -1,0 +1,4 @@
+Contact: mailto:admin@pacarerate.com
+Preferred-Languages: en
+Canonical: https://pacarerate.com/.well-known/security.txt
+Expires: 2027-04-05T00:00:00.000Z

@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PA CareRate — Audit Fixes Mockup</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        /* ============ SHARED (from shared.css) ============ */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #1a365d;
+            color: #ffffff;
+            min-height: 100vh;
+        }
+        a { color: #f97316; text-decoration: none; }
+        a:hover { color: #ea580c; }
+        .nav {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 1rem 2rem; background: rgba(0,0,0,0.15);
+        }
+        .nav-brand { font-size: 1rem; font-weight: 700; color: #fff; text-decoration: none; }
+        .nav-links { display: flex; gap: 1.5rem; list-style: none; }
+        .nav-links a { color: rgba(255,255,255,0.75); font-size: 0.875rem; font-weight: 500; text-decoration: none; }
+        .nav-links a:hover { color: #fff; }
+        .nav-links a.active { color: #f97316; }
+        .footer {
+            text-align: center; padding: 2rem 1.5rem; font-size: 0.7rem;
+            color: rgba(255,255,255,0.35); line-height: 1.6;
+        }
+        .footer a { color: rgba(255,255,255,0.45); border-bottom: 1px solid rgba(255,255,255,0.15); }
+        .footer a:hover { color: rgba(255,255,255,0.7); border-color: rgba(255,255,255,0.4); }
+        .btn-primary {
+            display: inline-block; background: #f97316; color: #fff;
+            font-family: 'Inter', sans-serif; font-size: 1rem; font-weight: 700;
+            padding: 0.875rem 2rem; border-radius: 8px; border: none; cursor: pointer;
+            transition: background 0.2s, transform 0.1s;
+        }
+        .btn-primary:hover { background: #ea580c; transform: translateY(-1px); }
+        .btn-primary:active { transform: translateY(0); }
+
+        /* ============ HERO ============ */
+        .hero {
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            text-align: center; min-height: 85vh; padding: 4rem 2rem 2rem; position: relative;
+        }
+        .hero .eyebrow {
+            display: inline-block; font-size: 0.75rem; font-weight: 700;
+            letter-spacing: 0.14em; text-transform: uppercase; color: #f97316; margin-bottom: 1.5rem;
+        }
+        .hero h1 {
+            font-size: 2.8rem; font-weight: 800; line-height: 1.15; color: #fff;
+            max-width: none; margin-bottom: 1.25rem; letter-spacing: -0.03em;
+        }
+        .hero .lede {
+            font-size: 1.1rem; font-weight: 400; line-height: 1.7;
+            color: rgba(255,255,255,0.6); max-width: none; margin-bottom: 3rem;
+        }
+        .scroll-hint {
+            position: absolute; bottom: 2rem; display: flex; flex-direction: column;
+            align-items: center; gap: 0.5rem; color: rgba(255,255,255,0.3);
+            font-size: 0.7rem; font-weight: 500; letter-spacing: 0.08em;
+            text-transform: uppercase; animation: pulse-down 2s ease-in-out infinite;
+        }
+        .scroll-hint svg {
+            width: 20px; height: 20px; stroke: rgba(255,255,255,0.3);
+            fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+        }
+        @keyframes pulse-down {
+            0%, 100% { transform: translateY(0); opacity: 0.4; }
+            50% { transform: translateY(6px); opacity: 0.8; }
+        }
+
+        /* ============ MAP SECTION ============ */
+        .map-section { padding-top: 1rem; }
+        .map-container {
+            position: relative; width: 100%; max-width: 1100px;
+            margin: 0 auto; padding: 2rem 1.5rem;
+        }
+        #map {
+            width: 100%; height: 540px; border-radius: 12px;
+            overflow: hidden; background: #0f2440;
+        }
+        .map-instruction {
+            text-align: center; font-size: 0.85rem;
+            color: rgba(255,255,255,0.75); margin-bottom: 1.25rem;
+        }
+
+        /* Detail panel */
+        .detail-panel {
+            display: none; background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.12); border-radius: 12px;
+            padding: 1.5rem; margin-top: 1.5rem;
+        }
+        .detail-panel.visible { display: block; }
+        .detail-panel h2 { font-size: 1.25rem; font-weight: 700; margin-bottom: 0.75rem; color: #f97316; }
+        .detail-panel .stat {
+            display: flex; justify-content: space-between; padding: 0.5rem 0;
+            border-bottom: 1px solid rgba(255,255,255,0.08); font-size: 0.95rem;
+        }
+        .detail-panel .stat-label { color: rgba(255,255,255,0.6); }
+        .detail-panel .stat-value { font-weight: 600; }
+
+        /* ============ BELOW-MAP ROW ============ */
+        .below-map-row {
+            display: flex; align-items: flex-start; gap: 2.5rem;
+            margin-top: 1.25rem;
+        }
+
+        /* ============ FIX 1: DATA NOTE ============ */
+        .data-note {
+            display: flex; align-items: flex-start; gap: 0.6rem;
+            flex: 1;
+        }
+        .data-note-icon {
+            flex-shrink: 0; width: 16px; height: 16px; margin-top: 1px;
+            stroke: #f97316; fill: none; stroke-width: 2;
+            stroke-linecap: round; stroke-linejoin: round;
+        }
+        .data-note p {
+            font-size: 0.75rem; line-height: 1.7;
+            color: rgba(255,255,255,0.85);
+        }
+
+        /* ============ FIX 4: COUNTY SEARCH COMBOBOX ============ */
+        .county-lookup {
+            flex-shrink: 0; width: 320px;
+        }
+        .county-lookup label {
+            display: block; font-size: 0.8rem; font-weight: 600;
+            color: rgba(255,255,255,0.85); margin-bottom: 0.5rem;
+            letter-spacing: 0.02em;
+        }
+        .county-combo {
+            position: relative; flex: 1; max-width: 360px;
+        }
+        .county-combo svg.search-icon {
+            position: absolute; left: 0.85rem; top: 50%; transform: translateY(-50%);
+            width: 16px; height: 16px; stroke: rgba(255,255,255,0.35);
+            fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+            pointer-events: none; z-index: 2;
+        }
+        .county-combo input {
+            width: 100%; background: rgba(255,255,255,0.12);
+            border: 1px solid rgba(255,255,255,0.4); border-radius: 8px;
+            padding: 0.6rem 0.85rem 0.6rem 2.4rem;
+            font-family: 'Inter', sans-serif; font-size: 0.9rem; color: #fff; outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .county-combo input::placeholder { color: rgba(255,255,255,0.5); }
+        .county-combo input:focus {
+            border-color: rgba(249,115,22,0.5);
+            box-shadow: 0 0 0 3px rgba(249,115,22,0.1);
+        }
+        .county-combo .dropdown {
+            display: none; position: absolute; top: calc(100% + 4px); left: 0; right: 0;
+            background: #1e3a5f; border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 8px; max-height: 260px; overflow-y: auto; z-index: 10;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+        }
+        .county-combo .dropdown.open { display: block; }
+        .county-combo .dropdown-item {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0.6rem 1rem; cursor: pointer; font-size: 0.85rem;
+            color: rgba(255,255,255,0.75); transition: background 0.1s;
+        }
+        .county-combo .dropdown-item:hover,
+        .county-combo .dropdown-item.active {
+            background: rgba(249,115,22,0.12); color: #fff;
+        }
+        .county-combo .dropdown-item .item-rate {
+            font-size: 0.8rem; font-weight: 600; color: rgba(255,255,255,0.45);
+            font-variant-numeric: tabular-nums;
+        }
+        .county-combo .dropdown-item:hover .item-rate,
+        .county-combo .dropdown-item.active .item-rate {
+            color: #f97316;
+        }
+        .county-combo .dropdown-empty {
+            padding: 1rem; text-align: center; font-size: 0.85rem;
+            color: rgba(255,255,255,0.35); font-style: italic;
+        }
+        .county-combo .dropdown::-webkit-scrollbar { width: 6px; }
+        .county-combo .dropdown::-webkit-scrollbar-track { background: transparent; }
+        .county-combo .dropdown::-webkit-scrollbar-thumb {
+            background: rgba(255,255,255,0.15); border-radius: 3px;
+        }
+
+        /* Keyboard shortcut hint */
+        .county-lookup-hint {
+            display: block; font-size: 0.7rem; color: rgba(255,255,255,0.5);
+            margin-top: 0.4rem;
+        }
+
+        /* ============ CTA SECTION ============ */
+        .action-section { text-align: center; padding: 2rem 2rem 4rem; }
+        .action-section p {
+            font-size: 0.95rem; color: rgba(255,255,255,0.85); margin-top: 1.25rem;
+            max-width: 440px; margin-left: auto; margin-right: auto;
+        }
+
+        /* ============ MAP PLACEHOLDER (mockup only) ============ */
+        .map-placeholder {
+            width: 100%; height: 540px; border-radius: 12px; background: #0f2440;
+            border: 1px solid rgba(255,255,255,0.1);
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            color: rgba(255,255,255,0.3); font-size: 0.9rem; font-weight: 600;
+            letter-spacing: 0.04em; position: relative; overflow: hidden;
+        }
+        .map-placeholder .county-highlight {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            width: 140px; height: 90px; border-radius: 12px;
+            border: 2px solid #f97316; background: rgba(249,115,22,0.12);
+            display: none; align-items: center; justify-content: center;
+            font-size: 0.8rem; font-weight: 700; color: #f97316;
+            animation: highlight-pulse 1.5s ease-in-out infinite;
+        }
+        .map-placeholder .county-highlight.visible { display: flex; }
+        @keyframes highlight-pulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(249,115,22,0.3); }
+            50% { box-shadow: 0 0 0 12px rgba(249,115,22,0); }
+        }
+        .map-placeholder-text { z-index: 1; }
+
+        /* ============ MOCKUP BANNER ============ */
+        .mockup-banner {
+            background: #7c3aed; color: #fff; text-align: center;
+            padding: 0.6rem 1rem; font-size: 0.75rem; font-weight: 600; letter-spacing: 0.04em;
+        }
+
+        /* ============ RESPONSIVE ============ */
+        @media (max-width: 640px) {
+            .hero { min-height: 75vh; padding: 3rem 1.5rem 2rem; }
+            .hero h1 { font-size: 2rem; }
+            .hero .lede { font-size: 0.95rem; }
+            .map-placeholder { height: 380px; }
+            .below-map-row { flex-direction: column; gap: 1.25rem; }
+            .county-lookup { width: 100%; }
+            .county-combo { max-width: 100%; }
+            .county-lookup-hint { display: none; }
+        }
+        @media (min-width: 768px) {
+            .hero h1 { font-size: 3.2rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="mockup-banner">MOCKUP — Audit Fix Preview (not live)</div>
+
+    <nav class="nav">
+        <a href="/" class="nav-brand">PA CareRate</a>
+        <ul class="nav-links">
+            <li><a href="#map" class="active">Rate Map</a></li>
+            <li><a href="/submit/">Share Your Rate</a></li>
+            <li><a href="/privacy.html">Privacy</a></li>
+        </ul>
+    </nav>
+
+    <main>
+
+        <!-- Hero — FIX 1: updated lede copy -->
+        <section class="hero">
+            <span class="eyebrow">PA Caregivers</span>
+            <h1>See what caregivers earn across PA.</h1>
+            <p class="lede">Pay rate data for home health caregivers across all 67 Pennsylvania counties, built from public sources and community reports.</p>
+            <div class="scroll-hint">
+                <span>Explore the map</span>
+                <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+            </div>
+        </section>
+
+        <!-- Map Section -->
+        <section class="map-section" id="map-section">
+            <div class="map-container">
+                <p class="map-instruction">Click a county on the map or search below.</p>
+
+                <!-- Map placeholder (mockup) -->
+                <div class="map-placeholder" id="map">
+                    <span class="map-placeholder-text">[ Leaflet map loads here ]</span>
+                    <div class="county-highlight" id="map-highlight"></div>
+                </div>
+
+                <!-- Below-map row: search left, data note right -->
+                <div class="below-map-row">
+                    <!-- Left: County search -->
+                    <div class="county-lookup" role="search" aria-label="Look up a county">
+                        <label for="county-input">Find a county</label>
+                        <div class="county-combo">
+                            <svg class="search-icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                            <input type="text" id="county-input" placeholder="Type a county name..."
+                                   role="combobox" aria-expanded="false" aria-controls="county-listbox"
+                                   aria-autocomplete="list" autocomplete="off">
+                            <div class="dropdown" id="county-listbox" role="listbox"></div>
+                        </div>
+                        <span class="county-lookup-hint">Arrow keys to navigate, Enter to select</span>
+                    </div>
+
+                    <!-- Right: Data note -->
+                    <div class="data-note">
+                        <svg class="data-note-icon" viewBox="0 0 24 24">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="12" y1="16" x2="12" y2="12"></line>
+                            <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                        </svg>
+                        <p>Early data. Rates shown are estimated from public filings, job postings, and industry surveys. As community reports come in, these estimates will be replaced with real reported rates. Rates shown are typical for caregivers working a standard 40-hour week.</p>
+                    </div>
+                </div>
+
+                <!-- Detail panel — triggered by search selection or map click -->
+                <div id="detail-panel" class="detail-panel">
+                    <h2 id="panel-county-name"></h2>
+                    <div id="panel-stats">
+                        <div class="stat">
+                            <span class="stat-label">Median Hourly Rate</span>
+                            <span class="stat-value" id="panel-median"></span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-label">Typical Range</span>
+                            <span class="stat-value" id="panel-range"></span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-label">Reports</span>
+                            <span class="stat-value" id="panel-count"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA -->
+        <section class="action-section">
+            <a href="/submit/" class="btn-primary">Contribute Your Rate</a>
+            <p>Add your data to help build a clearer picture for everyone.</p>
+        </section>
+
+    </main>
+
+    <footer class="footer">
+        <p><a href="/privacy.html">Privacy Policy</a> &middot; <a href="/terms.html">Terms of Service</a></p>
+        <p style="margin-top:0.5rem;">Your individual data is never shared. Only county-level averages are displayed.</p>
+        <p style="margin-top:0.75rem;">PA CareRate is an Accel Direct service. Accel Direct LLC is not a home care registry or home care agency.<br>
+        502 W 7th St, Erie, PA 16502 &middot; support@acceldirect.net</p>
+    </footer>
+
+    <script>
+    // Sample county data
+    var counties = [
+        { county: 'Adams', median: 16.50, p25: 15.50, p75: 17.75, reports: 6 },
+        { county: 'Allegheny', median: 17.50, p25: 16.00, p75: 19.00, reports: 6 },
+        { county: 'Armstrong', median: 16.50, p25: 15.50, p75: 17.50, reports: 6 },
+        { county: 'Beaver', median: 16.75, p25: 15.50, p75: 18.00, reports: 6 },
+        { county: 'Bedford', median: 16.25, p25: 15.25, p75: 17.25, reports: 6 },
+        { county: 'Berks', median: 17.00, p25: 15.75, p75: 18.25, reports: 6 },
+        { county: 'Blair', median: 16.50, p25: 15.50, p75: 17.50, reports: 6 },
+        { county: 'Bradford', median: 16.50, p25: 15.25, p75: 17.50, reports: 6 },
+        { county: 'Bucks', median: 18.00, p25: 16.50, p75: 19.50, reports: 6 },
+        { county: 'Butler', median: 17.00, p25: 16.00, p75: 18.25, reports: 6 },
+        { county: 'Cambria', median: 16.50, p25: 15.50, p75: 17.50, reports: 6 },
+        { county: 'Cameron', median: 16.25, p25: 15.25, p75: 17.25, reports: 6 },
+        { county: 'Carbon', median: 16.75, p25: 15.50, p75: 17.75, reports: 6 },
+        { county: 'Centre', median: 17.00, p25: 16.00, p75: 18.25, reports: 6 },
+        { county: 'Chester', median: 18.25, p25: 16.75, p75: 19.75, reports: 6 },
+        { county: 'Clarion', median: 16.25, p25: 15.25, p75: 17.25, reports: 6 },
+        { county: 'Clearfield', median: 16.25, p25: 15.25, p75: 17.25, reports: 6 },
+        { county: 'Clinton', median: 16.50, p25: 15.25, p75: 17.50, reports: 6 },
+        { county: 'Columbia', median: 16.50, p25: 15.50, p75: 17.50, reports: 6 },
+        { county: 'Crawford', median: 16.50, p25: 15.25, p75: 17.50, reports: 6 },
+        { county: 'Cumberland', median: 17.25, p25: 16.00, p75: 18.50, reports: 6 },
+        { county: 'Dauphin', median: 17.25, p25: 16.00, p75: 18.50, reports: 6 },
+        { county: 'Delaware', median: 18.00, p25: 16.50, p75: 19.50, reports: 6 },
+        { county: 'Elk', median: 16.25, p25: 15.25, p75: 17.25, reports: 6 },
+        { county: 'Erie', median: 17.00, p25: 15.75, p75: 18.25, reports: 6 },
+        { county: 'Fayette', median: 16.50, p25: 15.50, p75: 17.50, reports: 6 },
+        { county: 'Forest', median: 16.25, p25: 15.25, p75: 17.25, reports: 6 },
+        { county: 'Franklin', median: 16.75, p25: 15.50, p75: 17.75, reports: 6 },
+        { county: 'Fulton', median: 16.25, p25: 15.25, p75: 17.25, reports: 6 },
+        { county: 'Greene', median: 16.50, p25: 15.50, p75: 17.50, reports: 6 },
+        { county: 'Huntingdon', median: 16.25, p25: 15.25, p75: 17.25, reports: 6 },
+        { county: 'Indiana', median: 16.50, p25: 15.50, p75: 17.50, reports: 6 },
+        { county: 'Jefferson', median: 16.25, p25: 15.25, p75: 17.25, reports: 6 },
+        { county: 'Juniata', median: 16.25, p25: 15.25, p75: 17.25, reports: 6 },
+        { county: 'Lackawanna', median: 17.00, p25: 16.00, p75: 18.25, reports: 6 },
+        { county: 'Lancaster', median: 17.25, p25: 16.00, p75: 18.50, reports: 6 },
+        { county: 'Lawrence', median: 16.50, p25: 15.50, p75: 17.75, reports: 6 },
+        { county: 'Lebanon', median: 17.00, p25: 15.75, p75: 18.25, reports: 6 },
+        { county: 'Lehigh', median: 17.50, p25: 16.25, p75: 19.00, reports: 6 },
+        { county: 'Luzerne', median: 16.75, p25: 15.50, p75: 18.00, reports: 6 },
+        { county: 'Lycoming', median: 16.50, p25: 15.50, p75: 17.50, reports: 6 },
+        { county: 'McKean', median: 16.25, p25: 15.25, p75: 17.25, reports: 6 },
+        { county: 'Mercer', median: 16.50, p25: 15.50, p75: 17.50, reports: 6 },
+        { county: 'Mifflin', median: 16.25, p25: 15.25, p75: 17.25, reports: 6 },
+        { county: 'Monroe', median: 17.00, p25: 16.00, p75: 18.25, reports: 6 },
+        { county: 'Montgomery', median: 18.25, p25: 16.75, p75: 19.75, reports: 6 },
+        { county: 'Montour', median: 16.50, p25: 15.50, p75: 17.50, reports: 6 },
+        { county: 'Northampton', median: 17.25, p25: 16.00, p75: 18.50, reports: 6 },
+        { county: 'Northumberland', median: 16.50, p25: 15.50, p75: 17.50, reports: 6 },
+        { county: 'Perry', median: 16.50, p25: 15.50, p75: 17.50, reports: 6 },
+        { county: 'Philadelphia', median: 18.50, p25: 17.00, p75: 20.00, reports: 6 },
+        { county: 'Pike', median: 17.00, p25: 16.00, p75: 18.25, reports: 6 },
+        { county: 'Potter', median: 16.25, p25: 15.25, p75: 17.25, reports: 6 },
+        { county: 'Schuylkill', median: 16.50, p25: 15.50, p75: 17.50, reports: 6 },
+        { county: 'Snyder', median: 16.50, p25: 15.50, p75: 17.50, reports: 6 },
+        { county: 'Somerset', median: 16.25, p25: 15.25, p75: 17.25, reports: 6 },
+        { county: 'Sullivan', median: 16.25, p25: 15.25, p75: 17.25, reports: 6 },
+        { county: 'Susquehanna', median: 16.50, p25: 15.25, p75: 17.50, reports: 6 },
+        { county: 'Tioga', median: 16.50, p25: 15.25, p75: 17.50, reports: 6 },
+        { county: 'Union', median: 16.50, p25: 15.50, p75: 17.50, reports: 6 },
+        { county: 'Venango', median: 16.50, p25: 15.50, p75: 17.50, reports: 6 },
+        { county: 'Warren', median: 16.50, p25: 15.25, p75: 17.50, reports: 6 },
+        { county: 'Washington', median: 17.00, p25: 16.00, p75: 18.25, reports: 6 },
+        { county: 'Wayne', median: 16.75, p25: 15.50, p75: 17.75, reports: 6 },
+        { county: 'Westmoreland', median: 17.00, p25: 16.00, p75: 18.25, reports: 6 },
+        { county: 'Wyoming', median: 16.50, p25: 15.25, p75: 17.50, reports: 6 },
+        { county: 'York', median: 17.00, p25: 16.00, p75: 18.25, reports: 6 },
+    ];
+
+    var input = document.getElementById('county-input');
+    var listbox = document.getElementById('county-listbox');
+    var panel = document.getElementById('detail-panel');
+    var activeIndex = -1;
+
+    function showPanel(data) {
+        document.getElementById('panel-county-name').textContent = data.county + ' County';
+        document.getElementById('panel-median').textContent = '$' + data.median.toFixed(2) + '/hr';
+        document.getElementById('panel-range').textContent = '$' + data.p25.toFixed(2) + ' \u2013 $' + data.p75.toFixed(2);
+        document.getElementById('panel-count').textContent = data.reports + ' caregiver reports';
+        panel.classList.add('visible');
+        panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+        // Simulate map highlight (mockup only)
+        var highlight = document.getElementById('map-highlight');
+        highlight.textContent = data.county;
+        highlight.classList.add('visible');
+    }
+
+    function renderDropdown(matches) {
+        listbox.innerHTML = '';
+        activeIndex = -1;
+
+        if (matches.length === 0) {
+            listbox.innerHTML = '<div class="dropdown-empty">No counties found</div>';
+            listbox.classList.add('open');
+            input.setAttribute('aria-expanded', 'true');
+            return;
+        }
+
+        matches.forEach(function(item, i) {
+            var div = document.createElement('div');
+            div.className = 'dropdown-item';
+            div.setAttribute('role', 'option');
+            div.setAttribute('id', 'county-opt-' + i);
+            div.innerHTML = '<span>' + item.county + '</span><span class="item-rate">$' + item.median.toFixed(2) + '/hr</span>';
+            div.addEventListener('mousedown', function(e) {
+                e.preventDefault();
+                selectCounty(item);
+            });
+            listbox.appendChild(div);
+        });
+
+        listbox.classList.add('open');
+        input.setAttribute('aria-expanded', 'true');
+    }
+
+    function selectCounty(data) {
+        input.value = data.county;
+        listbox.classList.remove('open');
+        input.setAttribute('aria-expanded', 'false');
+        showPanel(data);
+    }
+
+    function setActive(index, items) {
+        items.forEach(function(el) { el.classList.remove('active'); });
+        if (index >= 0 && index < items.length) {
+            items[index].classList.add('active');
+            items[index].scrollIntoView({ block: 'nearest' });
+            input.setAttribute('aria-activedescendant', 'county-opt-' + index);
+        }
+    }
+
+    input.addEventListener('input', function() {
+        var q = this.value.toLowerCase().trim();
+        if (!q) {
+            listbox.classList.remove('open');
+            input.setAttribute('aria-expanded', 'false');
+            return;
+        }
+        var matches = counties.filter(function(c) {
+            return c.county.toLowerCase().indexOf(q) !== -1;
+        });
+        renderDropdown(matches);
+    });
+
+    input.addEventListener('focus', function() {
+        if (this.value.trim()) {
+            this.dispatchEvent(new Event('input'));
+        }
+    });
+
+    input.addEventListener('blur', function() {
+        setTimeout(function() {
+            listbox.classList.remove('open');
+            input.setAttribute('aria-expanded', 'false');
+        }, 150);
+    });
+
+    input.addEventListener('keydown', function(e) {
+        var items = listbox.querySelectorAll('.dropdown-item');
+        if (!items.length) return;
+
+        if (e.key === 'ArrowDown') {
+            e.preventDefault();
+            activeIndex = Math.min(activeIndex + 1, items.length - 1);
+            setActive(activeIndex, items);
+        } else if (e.key === 'ArrowUp') {
+            e.preventDefault();
+            activeIndex = Math.max(activeIndex - 1, 0);
+            setActive(activeIndex, items);
+        } else if (e.key === 'Enter') {
+            e.preventDefault();
+            if (activeIndex >= 0) {
+                var q = input.value.toLowerCase().trim();
+                var matches = counties.filter(function(c) {
+                    return c.county.toLowerCase().indexOf(q) !== -1;
+                });
+                if (matches[activeIndex]) selectCounty(matches[activeIndex]);
+            }
+        } else if (e.key === 'Escape') {
+            listbox.classList.remove('open');
+            input.setAttribute('aria-expanded', 'false');
+        }
+    });
+    </script>
+</body>
+</html>
