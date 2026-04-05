@@ -13,15 +13,7 @@
     countySelect.appendChild(option);
   });
 
-  // Inject Turnstile site key from config
-  var turnstileDiv = document.querySelector('.cf-turnstile');
-  if (turnstileDiv && config.turnstile_site_key) {
-    turnstileDiv.setAttribute('data-sitekey', config.turnstile_site_key);
-    // Re-render Turnstile if it loaded before config arrived
-    if (window.turnstile) {
-      window.turnstile.render(turnstileDiv);
-    }
-  }
+  // Turnstile renders declaratively via data-sitekey in the HTML
 
   // Pre-fill from gate submission if available
   var gateRate = localStorage.getItem('pacarerate_gate_rate');

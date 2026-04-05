@@ -6,10 +6,8 @@ import { PA_COUNTIES_SET } from './counties.js';
 function getCorsHeaders(env, request) {
   const origin = request ? request.headers.get('Origin') : null;
   const primary = env.SITE_ORIGIN || 'https://pacarerate.com';
-  const allowed = origin && (origin === primary || /^https:\/\/[a-z0-9-]+\.pacarerate-com\.pages\.dev$/.test(origin))
-    ? origin : primary;
-  return {
-    'Access-Control-Allow-Origin': allowed,
+  const isAllowed = origin && (origin === primary || /^https:\/\/[a-z0-9-]+\.pacarerate-com\.pages\.dev$/.test(origin));
+  const headers = {
     'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
     'Access-Control-Allow-Headers': 'Content-Type',
     'X-Content-Type-Options': 'nosniff',
@@ -17,6 +15,11 @@ function getCorsHeaders(env, request) {
     'Strict-Transport-Security': 'max-age=31536000; includeSubDomains',
     'Vary': 'Origin',
   };
+  // Only set ACAO for allowed origins — omit entirely for disallowed
+  if (isAllowed) {
+    headers['Access-Control-Allow-Origin'] = origin;
+  }
+  return headers;
 }
 
 function corsResponse(response, corsHeaders) {

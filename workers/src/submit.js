@@ -8,7 +8,9 @@ const TURNSTILE_ALLOWED_HOSTNAMES = new Set([
   'staging.pacarerate-com.pages.dev'
 ]);
 
-async function verifyTurnstile(token, secretKey, ip) {
+const TURNSTILE_EXPECTED_ACTION = 'submit-rate';
+
+async function verifyTurnstile(token, secretKey, ip, expectedAction) {
   const formData = new URLSearchParams();
   formData.append('secret', secretKey);
   formData.append('response', token);
@@ -24,6 +26,11 @@ async function verifyTurnstile(token, secretKey, ip) {
   // Validate hostname — reject tokens from unexpected domains
   if (outcome.hostname && !TURNSTILE_ALLOWED_HOSTNAMES.has(outcome.hostname) &&
       !/^[a-z0-9-]+\.pacarerate-com\.pages\.dev$/.test(outcome.hostname)) {
+    return false;
+  }
+
+  // Validate action — reject tokens minted for the wrong workflow
+  if (expectedAction && outcome.action && outcome.action !== expectedAction) {
     return false;
   }
 
@@ -76,7 +83,7 @@ export async function handleSubmit(request, env) {
   }
 
   const ip = request.headers.get('CF-Connecting-IP') || '0.0.0.0';
-  const turnstileValid = await verifyTurnstile(turnstileToken, env.TURNSTILE_SECRET_KEY, ip);
+  const turnstileValid = await verifyTurnstile(turnstileToken, env.TURNSTILE_SECRET_KEY, ip, TURNSTILE_EXPECTED_ACTION);
   if (!turnstileValid) {
     return new Response(JSON.stringify({ error: 'Bot verification failed' }), {
       status: 403,

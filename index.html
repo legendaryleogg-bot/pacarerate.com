@@ -710,12 +710,67 @@
     footer p:last-child { margin-top: 0.75rem; }
 
     /* ── Map gate (locked state) ──────────────────────────── */
-    #map-container.locked svg { filter: blur(8px) saturate(0.2) brightness(0.6); pointer-events: none; }
+    #map-container.locked svg { pointer-events: none; }
     #map-container.locked #zoom-controls,
     #map-container.locked #map-legend,
     #map-container.locked #scroll-hint-map,
     #map-container.locked #map-tooltip { display: none !important; }
     .map-instruction.locked { display: none !important; }
+
+    /* ── Proof block (sample counties + stats) ──────────── */
+    .proof-block {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.25rem;
+      margin-bottom: 1.5rem;
+      width: 100%;
+      max-width: 460px;
+    }
+    .proof-cards {
+      display: flex;
+      gap: 0.75rem;
+      width: 100%;
+      justify-content: center;
+    }
+    .proof-card {
+      flex: 1;
+      max-width: 140px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 10px;
+      padding: 0.75rem 0.6rem;
+      text-align: center;
+    }
+    .proof-card-county {
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: #e2e8f0;
+      margin-bottom: 0.35rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .proof-card-rate {
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: #f97316;
+      line-height: 1;
+    }
+    .proof-card-label {
+      font-size: 0.6rem;
+      color: #94a3b8;
+      margin-top: 0.2rem;
+    }
+    .proof-stats {
+      font-size: 0.78rem;
+      color: #94a3b8;
+      letter-spacing: 0.03em;
+    }
+    .proof-stats strong {
+      color: #e2e8f0;
+      font-weight: 700;
+    }
 
     /* Gate wrapper — overlays map on desktop, flows below on mobile */
     .map-gate-wrap {
@@ -826,7 +881,6 @@
       font-size: 0.65rem;
       color: #94a3b8;
       margin-top: 0.5rem;
-      max-width: 300px;
       line-height: 1.5;
     }
 
@@ -953,8 +1007,14 @@
         <!-- Gate — outside map-container so it's not clipped on mobile -->
         <div class="map-gate-wrap" id="map-gate-wrap">
           <div class="map-gate" id="map-gate">
-            <div class="gate-title">Share your rate to unlock the map</div>
-            <div class="gate-sub">Takes 10 seconds. Your data stays anonymous — only county averages are shown.</div>
+            <!-- Proof block — show value before the ask -->
+            <div class="proof-block" id="proof-block">
+              <div class="proof-cards" id="proof-cards"></div>
+              <div class="proof-stats" id="proof-stats"></div>
+            </div>
+
+            <div class="gate-title">Contribute your rate to unlock full access</div>
+            <div class="gate-sub">Click any county, search, and compare rates across PA.</div>
             <div class="gate-form" id="gate-form">
               <div class="gate-row">
                 <label for="gate-rate" class="sr-only">Hourly rate</label>
@@ -1096,6 +1156,7 @@
             size: 'compact',
             execution: 'execute',
             appearance: 'interaction-only',
+            action: 'submit-rate',
             callback: function(token) {
               // Token received — if a submit is pending, fire it now
               if (pendingSubmit) {
@@ -1202,6 +1263,32 @@
 
     // Initialize gate immediately — don't wait for map data
     initGate();
+
+    function populateProofBlock() {
+      if (mapUnlocked || counties.length === 0) return;
+      // Sort by median to find high, mid, low
+      const sorted = [...counties].sort((a, b) => b.median - a.median);
+      const high = sorted[0];
+      const low = sorted[sorted.length - 1];
+      const mid = sorted[Math.floor(sorted.length / 2)];
+      const rawTotal = counties.reduce((sum, c) => sum + c.reports, 0);
+      const totalReports = rawTotal < 100 ? rawTotal : Math.floor(rawTotal / 10) * 10 + '+';
+
+      const cardsEl = document.getElementById('proof-cards');
+      const statsEl = document.getElementById('proof-stats');
+      if (!cardsEl || !statsEl) return;
+
+      [high, mid, low].forEach(c => {
+        const card = document.createElement('div');
+        card.className = 'proof-card';
+        card.innerHTML = '<div class="proof-card-county">' + c.county + '</div>'
+          + '<div class="proof-card-rate">$' + c.median.toFixed(2) + '</div>'
+          + '<div class="proof-card-label">median/hr</div>';
+        cardsEl.appendChild(card);
+      });
+
+      statsEl.innerHTML = '<strong>' + counties.length + '</strong> counties tracked · <strong>' + totalReports + '</strong> data points';
+    }
 
     // ── County data (fetched from live API) ─────────────────────────────────
     const API_BASE = 'https://api.pacarerate.com';
@@ -1365,6 +1452,9 @@
       document.getElementById('legend-min').textContent = `$${RATE_MIN.toFixed(2)}`;
       document.getElementById('legend-max').textContent = `$${RATE_MAX.toFixed(2)}`;
 
+      // Populate proof cards if gate is showing
+      populateProofBlock();
+
       return fetch('https://cdn.jsdelivr.net/npm/us-atlas@3/counties-10m.json');
     })
       .then(r => r.json())
@@ -1403,7 +1493,6 @@
           .attr('d', d => pathGen(d) ?? '')
           .attr('fill', d => {
             const name = PA_FIPS[String(d.id)];
-            if (!mapUnlocked) return '#1a3a6e';
             return name && countyByName[name] ? getRateColor(countyByName[name].median) : '#1a3a6e';
           })
           .attr('stroke', '#1a365d')

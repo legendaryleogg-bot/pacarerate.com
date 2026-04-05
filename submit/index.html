@@ -35,6 +35,7 @@
         </ul>
     </nav>
 
+    <main>
     <div class="form-container" id="form-wrapper">
         <h1>Share Your PA Caregiver Pay Rate</h1>
         <p class="subtitle">Your individual data is never shared. Only county-level averages are displayed.</p>
@@ -43,25 +44,25 @@
 
         <form id="rate-form" novalidate>
             <div class="form-group">
-                <label>Hourly Rate <span class="required">*</span></label>
+                <label for="rate">Hourly Rate <span class="required">*</span></label>
                 <input type="number" id="rate" name="rate" min="5" max="75" step="0.25" placeholder="e.g., 15.50" required>
                 <p class="hint">Your current hourly pay rate ($5–$75)</p>
             </div>
 
             <div class="form-group">
-                <label>County <span class="required">*</span></label>
+                <label for="county">County <span class="required">*</span></label>
                 <select id="county" name="county" required>
                     <option value="">Select your county</option>
                 </select>
             </div>
 
             <div class="form-group">
-                <label>Employer Name <span style="color:rgba(255,255,255,0.4);font-weight:400;">(optional)</span></label>
+                <label for="employer_name">Employer Name <span style="color:#94a3b8;font-weight:400;">(optional)</span></label>
                 <input type="text" id="employer_name" name="employer_name" placeholder="e.g., Bayada Home Health Care">
             </div>
 
             <div class="form-group">
-                <label>Job Type <span style="color:rgba(255,255,255,0.4);font-weight:400;">(optional)</span></label>
+                <label for="job_type">Job Type <span style="color:#94a3b8;font-weight:400;">(optional)</span></label>
                 <select id="job_type" name="job_type">
                     <option value="">Select job type</option>
                     <option value="personal care aide">Personal Care Aide</option>
@@ -73,12 +74,12 @@
             </div>
 
             <div class="form-group">
-                <label>Hours Per Week <span style="color:rgba(255,255,255,0.4);font-weight:400;">(optional)</span></label>
+                <label for="hours_per_week">Hours Per Week <span style="color:#94a3b8;font-weight:400;">(optional)</span></label>
                 <input type="number" id="hours_per_week" name="hours_per_week" min="1" max="168" placeholder="e.g., 35">
             </div>
 
             <div class="form-group">
-                <label>Benefits <span style="color:rgba(255,255,255,0.4);font-weight:400;">(optional, check all that apply)</span></label>
+                <label>Benefits <span style="color:#94a3b8;font-weight:400;">(optional, check all that apply)</span></label>
                 <div class="benefits-grid">
                     <label><input type="checkbox" name="benefits" value="health_insurance"> Health Insurance</label>
                     <label><input type="checkbox" name="benefits" value="pto"> PTO / Paid Time Off</label>
@@ -92,7 +93,7 @@
             </div>
 
             <div class="form-group">
-                <label>Satisfaction <span style="color:rgba(255,255,255,0.4);font-weight:400;">(optional)</span></label>
+                <label>Satisfaction <span style="color:#94a3b8;font-weight:400;">(optional)</span></label>
                 <div class="satisfaction-group">
                     <label><input type="radio" name="satisfaction" value="1"><span>1</span></label>
                     <label><input type="radio" name="satisfaction" value="2"><span>2</span></label>
@@ -103,7 +104,7 @@
                 <p class="hint">1 = very unsatisfied, 5 = very satisfied</p>
             </div>
 
-            <div class="cf-turnstile" data-sitekey="0x4AAAAAACzAMQ1ULEiIS32g" data-theme="dark"></div>
+            <div class="cf-turnstile" data-sitekey="0x4AAAAAACzAMQ1ULEiIS32g" data-theme="dark" data-action="submit-rate"></div>
 
             <div style="margin-top: 1.5rem;">
                 <button type="submit" class="btn-primary" style="width:100%;">Submit My Rate</button>
@@ -124,6 +125,7 @@
             <p style="margin-top:2rem;font-size:0.85rem;color:rgba(255,255,255,0.45);">Curious what <em>you</em> could be earning? <span style="color:#f97316;border-bottom:1px solid rgba(249,115,22,0.3);cursor:default;opacity:0.5;">Check your personalized rate</span></p>
         </div>
     </div>
+    </main>
 
     <footer class="footer">
         <p><a href="/privacy.html">Privacy Policy</a> &middot; <a href="/terms.html">Terms of Service</a></p>
