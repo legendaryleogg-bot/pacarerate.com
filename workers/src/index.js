@@ -8,16 +8,19 @@ function getCorsHeaders(env, request) {
   const primary = env.SITE_ORIGIN || 'https://pacarerate.com';
   const isAllowed = origin && (origin === primary || /^https:\/\/[a-z0-9-]+\.pacarerate-com\.pages\.dev$/.test(origin));
   const headers = {
-    'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-    'Access-Control-Allow-Headers': 'Content-Type',
     'X-Content-Type-Options': 'nosniff',
     'X-Frame-Options': 'DENY',
-    'Strict-Transport-Security': 'max-age=31536000; includeSubDomains',
+    'Strict-Transport-Security': 'max-age=31536000; includeSubDomains; preload',
+    'Referrer-Policy': 'strict-origin-when-cross-origin',
+    'Permissions-Policy': 'camera=(), microphone=(), geolocation=()',
+    'Content-Security-Policy': "default-src 'none'; frame-ancestors 'none'; base-uri 'none'; form-action 'self'",
+    'Cache-Control': 'no-store',
     'Vary': 'Origin',
   };
-  // Only set ACAO for allowed origins — omit entirely for disallowed
   if (isAllowed) {
     headers['Access-Control-Allow-Origin'] = origin;
+    headers['Access-Control-Allow-Methods'] = 'GET, POST, OPTIONS';
+    headers['Access-Control-Allow-Headers'] = 'Content-Type';
   }
   return headers;
 }
